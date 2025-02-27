@@ -1,0 +1,88 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  </style>
+  <script>
+  var canvas = null;
+  var canvasPosition = null;
+  var context = null;
+
+  function calcMouseEvent(event)
+  {
+     return {
+       "x": event.clientX - canvasPosition.left,
+       "y": event.clientY - canvasPosition.top,
+       "button": event.button
+     };
+  }
+
+  function mouseDown(event)
+  {
+    const mouse = calcMouseEvent(event);
+    draw();
+  }
+
+  function mouseMove(event)
+  {
+    const mouse = calcMouseEvent(event);
+  }
+
+  function mouseUp(event)
+  {
+    const mouse = calcMouseEvent(event);
+  }
+
+  function mouseWheel(event)
+  {
+    const mouse = calcMouseEvent(event);
+    const delta = event.wheelDelta;
+    event.preventDefault();
+  }
+
+  function initialize()
+  {
+    canvas = document.getElementById("my-canvas");
+    canvasPosition = canvas.getBoundingClientRect();
+    canvas.addEventListener("mousedown", mouseDown, false);
+    canvas.addEventListener("mousemove", mouseMove, false);
+    canvas.addEventListener("mouseup", mouseUp, false);
+    canvas.addEventListener("mousewheel", mouseWheel, false);
+    context = canvas.getContext("2d");
+  }
+
+  function draw()
+  {
+    context.font = "64px Monospace";
+    let asciiCode = 0;
+    for (let i = 0; i < 8; ++i) {
+      for (let j = 0; j < 16; ++j) {
+        let x = j * 32;
+        let y = i * 64;
+        /*
+        context.beginPath();
+        context.lineWidth = 1;
+        context.strokeStyle = "gray";
+        context.rect(x, y, 32, 64);
+        context.stroke();
+        */
+        if (asciiCode >= 32 && asciiCode < 127) {
+          let c = String.fromCharCode(asciiCode);
+          context.fillText(c, x, y + 50);
+        }
+        ++asciiCode;
+      }
+    }
+  }
+  </script>
+  <body onload="initialize()">
+    <canvas id="my-canvas" width="512px" height="512px">
+    </canvas>
+  </body>
+</html>
