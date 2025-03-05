@@ -1,4 +1,4 @@
-Számítógép grafika beadandó és gyakorlati feladatok
+Számítógépi grafika beadandó és gyakorlati feladatok
 
 Név: Lengyel Gábor
 
