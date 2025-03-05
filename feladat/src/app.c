@@ -102,12 +102,15 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 
+SDL_bool is_key_pressed(SDL_Scancode key) {
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    return state[key] != 0;
+}
+
+
 void handle_app_events(App* app) {
     SDL_Event event;
-    static bool is_mouse_down = false;
     static int rel_x, rel_y;
-    int x;
-    int y;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -117,16 +120,54 @@ void handle_app_events(App* app) {
                 app->is_running = false;
                 break;
             case SDL_SCANCODE_W:
-                set_camera_speed(&(app->camera), 1);
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_speed(&(app->camera), 5);
+                } else {
+                    set_camera_speed(&(app->camera), 2);
+                }
                 break;
             case SDL_SCANCODE_S:
-                set_camera_speed(&(app->camera), -1);
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_speed(&(app->camera), -5);
+                } else {
+                    set_camera_speed(&(app->camera), -2);
+                }
                 break;
             case SDL_SCANCODE_A:
-                set_camera_side_speed(&(app->camera), 1);
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_side_speed(&(app->camera), 5);
+                } else {
+                    set_camera_side_speed(&(app->camera), 2);
+                }
                 break;
             case SDL_SCANCODE_D:
-                set_camera_side_speed(&(app->camera), -1);
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_side_speed(&(app->camera), -5);
+                } else {
+                    set_camera_side_speed(&(app->camera), -2);
+                }
+                break;
+            case SDL_SCANCODE_C:
+                app->camera.is_crouching = !app->camera.is_crouching;
+                if (app->camera.is_crouching) {
+                    app->camera.position.z -= 0.5;
+                } else {
+                    app->camera.position.z += 0.5;
+                }
+                break;
+            case SDL_SCANCODE_LSHIFT:
+                if (is_key_pressed(SDL_SCANCODE_W)) {
+                    set_camera_speed(&(app->camera), 5);
+                }
+                if (is_key_pressed(SDL_SCANCODE_S)) {
+                    set_camera_speed(&(app->camera), -5);
+                }
+                if (is_key_pressed(SDL_SCANCODE_A)) {
+                    set_camera_side_speed(&(app->camera), 5);
+                }
+                if (is_key_pressed(SDL_SCANCODE_D)) {
+                    set_camera_side_speed(&(app->camera), -5);
+                }
                 break;
             default:
                 break;
@@ -142,19 +183,27 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), 0);
                 break;
+            case SDL_SCANCODE_LSHIFT:
+                if (is_key_pressed(SDL_SCANCODE_W)) {
+                    set_camera_speed(&(app->camera), 2);
+                }
+                if (is_key_pressed(SDL_SCANCODE_S)) {
+                    set_camera_speed(&(app->camera), -2);
+                }
+                if (is_key_pressed(SDL_SCANCODE_A)) {
+                    set_camera_side_speed(&(app->camera), 2);
+                }
+                if (is_key_pressed(SDL_SCANCODE_D)) {
+                    set_camera_side_speed(&(app->camera), -2);
+                }
+                break;
             default:
                 break;
             }
             break;
-        case SDL_MOUSEBUTTONDOWN:
-            is_mouse_down = true;
-            break;
         case SDL_MOUSEMOTION:
             SDL_GetRelativeMouseState(&rel_x, &rel_y);
             rotate_camera(&(app->camera), -rel_x, -rel_y);
-            break;
-        case SDL_MOUSEBUTTONUP:
-            is_mouse_down = false;
             break;
         case SDL_QUIT:
             app->is_running = false;

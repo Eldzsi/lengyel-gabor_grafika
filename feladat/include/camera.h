@@ -10,6 +10,8 @@ typedef struct Camera {
     vec3 rotation;
     vec3 speed;
     bool is_preview_visible;
+    bool is_crouching;
+    bool is_sprinting;
 } Camera;
 
 void init_camera(Camera* camera);
@@ -19,6 +21,8 @@ void update_camera(Camera* camera, double time);
 void set_view(const Camera* camera);
 
 void rotate_camera(Camera* camera, double horizontal, double vertical);
+
+void get_camera_speed(Camera* camera);
 
 void set_camera_speed(Camera* camera, double speed);
 
