@@ -45,6 +45,9 @@ void init_app(App* app, int width, int height) {
     init_scene(&(app->scene));
 
     app->is_running = true;
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
 }
 
 
@@ -102,8 +105,7 @@ void reshape(GLsizei width, GLsizei height) {
 void handle_app_events(App* app) {
     SDL_Event event;
     static bool is_mouse_down = false;
-    static int mouse_x = 0;
-    static int mouse_y = 0;
+    static int rel_x, rel_y;
     int x;
     int y;
 
@@ -148,12 +150,8 @@ void handle_app_events(App* app) {
             is_mouse_down = true;
             break;
         case SDL_MOUSEMOTION:
-            SDL_GetMouseState(&x, &y);
-            if (is_mouse_down) {
-                rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
-            }
-            mouse_x = x;
-            mouse_y = y;
+            SDL_GetRelativeMouseState(&rel_x, &rel_y);
+            rotate_camera(&(app->camera), -rel_x, -rel_y);
             break;
         case SDL_MOUSEBUTTONUP:
             is_mouse_down = false;

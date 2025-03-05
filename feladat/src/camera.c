@@ -56,12 +56,12 @@ void rotate_camera(Camera* camera, double horizontal, double vertical) {
         camera->rotation.z -= 360.0;
     }
 
-    if (camera->rotation.x < 0) {
-        camera->rotation.x += 360.0;
+    if (camera->rotation.x < -90) {
+        camera->rotation.x = -90;
     }
 
-    if (camera->rotation.x > 360.0) {
-        camera->rotation.x -= 360.0;
+    if (camera->rotation.x > 90.0) {
+        camera->rotation.x = 90.0;
     }
 }
 
