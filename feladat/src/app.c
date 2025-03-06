@@ -16,11 +16,16 @@ void init_app(App* app, int width, int height) {
         return;
     }
 
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    width = DM.w;
+    height = DM.h;
+
     app->window = SDL_CreateWindow(
         "Game",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        0, 0,
         width, height,
-        SDL_WINDOW_OPENGL);
+        SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (app->window == NULL) {
         printf("[ERROR] Unable to create the application window!\n");
         return;
@@ -74,32 +79,23 @@ void init_opengl() {
 
 
 void reshape(GLsizei width, GLsizei height) {
-    int x, y, w, h;
-    double ratio;
+    double ratio = (double)width / (double)height;
 
-    ratio = (double)width / height;
-    if (ratio > VIEWPORT_RATIO) {
-        w = (int)((double)height * VIEWPORT_RATIO);
-        h = height;
-        x = (width - w) / 2;
-        y = 0;
-    }
-    else {
-        w = width;
-        h = (int)((double)width / VIEWPORT_RATIO);
-        x = 0;
-        y = (height - h) / 2;
-    }
-
-    glViewport(x, y, w, h);
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    
+    double near = 0.08;
+    double far = 10.0;
+    double view_size = 0.08;
+
     glFrustum(
-        -.08, .08,
-        -.06, .06,
-        .1, 10
+        -view_size * ratio, view_size * ratio,
+        -view_size, view_size,
+        near, far
     );
 }
+
 
 
 SDL_bool is_key_pressed(SDL_Scancode key) {
