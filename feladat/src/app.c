@@ -17,7 +17,7 @@ void init_app(App* app, int width, int height) {
     }
 
     app->window = SDL_CreateWindow(
-        "Cube!",
+        "Game",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_OPENGL);
