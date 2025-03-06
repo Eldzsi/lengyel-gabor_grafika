@@ -28,7 +28,7 @@ void update_camera(Camera* camera, double time) {
     double angle;
     double side_angle;
 
-    const float gravity = 0.005;
+    const float gravity = 18;  // Ezt csökkenthetjük, hogy ne ugorjon túl magasra
     const float ground_level = 0.0;
 
     angle = degree_to_radian(camera->rotation.z);
@@ -43,13 +43,14 @@ void update_camera(Camera* camera, double time) {
         camera->position.z += camera->speed.z * time;
     }
 
+    // Gravitáció és leérkezés kezelése
     if (camera->position.z > ground_level + 2.0) {
-        camera->speed.z -= gravity * time;
+        camera->speed.z -= gravity * time;  // Folyamatosan csökkenti a sebességet (gravitáció)
     } else {
+        camera->position.z = ground_level + 2.0;  // Ha elérte a talajt, akkor visszaállítjuk a z pozíciót a földre
         camera->speed.z = 0.0;
-        camera->is_jumping = false;
+        camera->is_jumping = false;  // Leérkezés után lehet újra ugrani
     }
-
 }
 
 

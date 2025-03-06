@@ -172,7 +172,7 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_SPACE:
                 if (!app->camera.is_jumping) { 
                     app->camera.is_jumping = true;
-                    app->camera.speed.z = 0.001;
+                    app->camera.speed.z = 8;
                 }
                 break;
             default:
