@@ -41,10 +41,10 @@ void update_camera(Camera* camera, double time) {
         camera->position.z += camera->speed.z * time;
     }
 
-    if (camera->position.z > ground_level + 2.0) {
+    if (camera->position.z > ground_level + 1.5) {
         camera->speed.z -= gravity * time;
     } else {
-        camera->position.z = ground_level + 2.0;
+        camera->position.z = ground_level + 1.5;
         camera->speed.z = 0.0;
         camera->is_jumping = false;
     }

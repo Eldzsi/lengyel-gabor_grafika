@@ -148,12 +148,12 @@ void handle_app_events(App* app) {
                 }
                 break;
             case SDL_SCANCODE_C:
-                app->camera.is_crouching = !app->camera.is_crouching;
                 if (app->camera.is_crouching) {
-                    app->camera.position.z -= 0.5;
-                } else {
                     app->camera.position.z += 0.5;
+                } else {
+                    app->camera.position.z -= 0.5;
                 }
+                app->camera.is_crouching = !app->camera.is_crouching;
                 break;
             case SDL_SCANCODE_LSHIFT:
                 if (is_key_pressed(SDL_SCANCODE_W)) {
