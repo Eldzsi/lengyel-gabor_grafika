@@ -9,7 +9,7 @@ typedef struct Camera {
     vec3 position;
     vec3 rotation;
     vec3 speed;
-    bool is_preview_visible;
+    
     bool is_crouching;
     bool is_sprinting;
     bool is_jumping;

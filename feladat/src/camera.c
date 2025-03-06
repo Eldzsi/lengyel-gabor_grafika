@@ -16,8 +16,6 @@ void init_camera(Camera* camera) {
     camera->speed.y = 0.0;
     camera->speed.z = 0.0;
 
-    camera->is_preview_visible = false;
-
     camera->is_crouching = false;
     camera->is_sprinting = false;
     camera->is_jumping = false;
@@ -28,7 +26,7 @@ void update_camera(Camera* camera, double time) {
     double angle;
     double side_angle;
 
-    const float gravity = 18;  // Ezt csökkenthetjük, hogy ne ugorjon túl magasra
+    const float gravity = 18;
     const float ground_level = 0.0;
 
     angle = degree_to_radian(camera->rotation.z);
@@ -43,13 +41,12 @@ void update_camera(Camera* camera, double time) {
         camera->position.z += camera->speed.z * time;
     }
 
-    // Gravitáció és leérkezés kezelése
     if (camera->position.z > ground_level + 2.0) {
-        camera->speed.z -= gravity * time;  // Folyamatosan csökkenti a sebességet (gravitáció)
+        camera->speed.z -= gravity * time;
     } else {
-        camera->position.z = ground_level + 2.0;  // Ha elérte a talajt, akkor visszaállítjuk a z pozíciót a földre
+        camera->position.z = ground_level + 2.0;
         camera->speed.z = 0.0;
-        camera->is_jumping = false;  // Leérkezés után lehet újra ugrani
+        camera->is_jumping = false;
     }
 }
 
@@ -93,31 +90,4 @@ void set_camera_speed(Camera* camera, double speed) {
 
 void set_camera_side_speed(Camera* camera, double speed) {
     camera->speed.x = speed;
-}
-
-
-void show_texture_preview() {
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_COLOR_MATERIAL);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glColor3f(1, 1, 1);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0);
-    glVertex3f(-1, 1, -3);
-    glTexCoord2f(1, 0);
-    glVertex3f(1, 1, -3);
-    glTexCoord2f(1, 1);
-    glVertex3f(1, -1, -3);
-    glTexCoord2f(0, 1);
-    glVertex3f(-1, -1, -3);
-    glEnd();
-
-    glDisable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
 }
