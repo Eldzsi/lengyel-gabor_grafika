@@ -17,12 +17,19 @@ void init_camera(Camera* camera) {
     camera->speed.z = 0.0;
 
     camera->is_preview_visible = false;
+
+    camera->is_crouching = false;
+    camera->is_sprinting = false;
+    camera->is_jumping = false;
 }
 
 
 void update_camera(Camera* camera, double time) {
     double angle;
     double side_angle;
+
+    const float gravity = 0.005;
+    const float ground_level = 0.0;
 
     angle = degree_to_radian(camera->rotation.z);
     side_angle = degree_to_radian(camera->rotation.z + 90.0);
@@ -31,6 +38,18 @@ void update_camera(Camera* camera, double time) {
     camera->position.y += sin(angle) * camera->speed.y * time;
     camera->position.x += cos(side_angle) * camera->speed.x * time;
     camera->position.y += sin(side_angle) * camera->speed.x * time;
+
+    if (camera->is_jumping) {
+        camera->position.z += camera->speed.z * time;
+    }
+
+    if (camera->position.z > ground_level + 2.0) {
+        camera->speed.z -= gravity * time;
+    } else {
+        camera->speed.z = 0.0;
+        camera->is_jumping = false;
+    }
+
 }
 
 

@@ -169,6 +169,12 @@ void handle_app_events(App* app) {
                     set_camera_side_speed(&(app->camera), -5);
                 }
                 break;
+            case SDL_SCANCODE_SPACE:
+                if (!app->camera.is_jumping) { 
+                    app->camera.is_jumping = true;
+                    app->camera.speed.z = 0.001;
+                }
+                break;
             default:
                 break;
             }

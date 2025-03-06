@@ -12,6 +12,7 @@ typedef struct Camera {
     bool is_preview_visible;
     bool is_crouching;
     bool is_sprinting;
+    bool is_jumping;
 } Camera;
 
 void init_camera(Camera* camera);
