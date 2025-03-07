@@ -213,17 +213,19 @@ void handle_app_events(App* app) {
                 set_camera_side_speed(&(app->camera), 0);
                 break;
             case SDL_SCANCODE_LSHIFT:
-                if (is_key_pressed(SDL_SCANCODE_W)) {
-                    set_camera_speed(&(app->camera), 1);
-                }
-                if (is_key_pressed(SDL_SCANCODE_S)) {
-                    set_camera_speed(&(app->camera), -1);
-                }
-                if (is_key_pressed(SDL_SCANCODE_A)) {
-                    set_camera_side_speed(&(app->camera), 1);
-                }
-                if (is_key_pressed(SDL_SCANCODE_D)) {
-                    set_camera_side_speed(&(app->camera), -1);
+                if (!app->camera.is_jumping) {
+                    if (is_key_pressed(SDL_SCANCODE_W)) {
+                        set_camera_speed(&(app->camera), 1);
+                    }
+                    if (is_key_pressed(SDL_SCANCODE_S)) {
+                        set_camera_speed(&(app->camera), -1);
+                    }
+                    if (is_key_pressed(SDL_SCANCODE_A)) {
+                        set_camera_side_speed(&(app->camera), 1);
+                    }
+                    if (is_key_pressed(SDL_SCANCODE_D)) {
+                        set_camera_side_speed(&(app->camera), -1);
+                    }
                 }
                 break;
             default:
