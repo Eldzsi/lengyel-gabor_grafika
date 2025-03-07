@@ -5,8 +5,8 @@
 
 
 void init_scene(Scene* scene) {
-    load_model(&(scene->cube), "assets/models/cube.obj");
-    scene->texture_id = load_texture("assets/textures/cube.png");
+    load_model(&(scene->grass), "assets/models/grass.obj");
+    //scene->texture_id = load_texture("assets/textures/grass.jpg");
 
     glBindTexture(GL_TEXTURE_2D, scene->texture_id);
 
@@ -73,5 +73,5 @@ void update_scene(Scene* scene) {
 void render_scene(const Scene* scene) {
     set_material(&(scene->material));
     set_lighting();
-    draw_model(&(scene->cube));
+    draw_model(&(scene->grass));
 }

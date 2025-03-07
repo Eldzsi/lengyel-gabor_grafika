@@ -7,7 +7,7 @@
 #include <obj/model.h>
 
 typedef struct Scene {
-    Model cube;
+    Model grass;
     Material material;
     GLuint texture_id;
 } Scene;
