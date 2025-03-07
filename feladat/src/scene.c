@@ -75,8 +75,8 @@ void render_scene(const Scene* scene) {
     set_lighting();
 
     glPushMatrix();  
-    glTranslatef(0.0f, 0.0f, -6.0f);
-    glScalef(0.08f, 0.08f, 0.08f);
+    glTranslatef(0.0f, 0.0f, 2.0f);
+    glScalef(0.008f, 0.008f, 0.008f);
     draw_model(&(scene->table));  
     glPopMatrix();
 }
