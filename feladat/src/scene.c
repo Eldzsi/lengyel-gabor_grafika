@@ -5,10 +5,10 @@
 
 
 void init_scene(Scene* scene) {
-    load_model(&(scene->grass), "assets/models/grass.obj");
-    scene->texture_id = load_texture("assets/textures/grass.jpg");
+    load_model(&(scene->table), "assets/models/table.obj");
+    scene->texture_id = load_texture("assets/textures/table.jpg");
 
-    glBindTexture(GL_TEXTURE_2D, scene->texture_id);
+    //glBindTexture(GL_TEXTURE_2D, scene->texture_id);
 
     scene->material.ambient.red = 1.0;
     scene->material.ambient.green = 1.0;
@@ -73,5 +73,10 @@ void update_scene(Scene* scene) {
 void render_scene(const Scene* scene) {
     set_material(&(scene->material));
     set_lighting();
-    draw_model(&(scene->grass));
+
+    glPushMatrix();  
+    glTranslatef(0.0f, 0.0f, -6.0f);
+    glScalef(0.08f, 0.08f, 0.08f);
+    draw_model(&(scene->table));  
+    glPopMatrix();
 }

@@ -86,7 +86,7 @@ void reshape(GLsizei width, GLsizei height) {
     glLoadIdentity();
     
     double near = 0.08;
-    double far = 10.0;
+    double far = 100.0;
     double view_size = 0.08;
 
     glFrustum(
