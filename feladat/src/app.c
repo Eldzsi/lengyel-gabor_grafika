@@ -146,9 +146,9 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_C:
                 if (!app->camera.is_jumping) {
                     if (app->camera.is_crouching) {
-                        app->camera.position.z += 0.5;
+                        app->camera.position.z += 0.8;
                     } else {
-                        app->camera.position.z -= 0.5;
+                        app->camera.position.z -= 0.8;
                     }
                     app->camera.is_crouching = !app->camera.is_crouching;
                 }
@@ -170,7 +170,7 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_SPACE:
 
                 if (app->camera.is_crouching) {
-                    app->camera.position.z += 0.5;
+                    app->camera.position.z += 0.8;
                 }
                 app->camera.is_crouching = false;
 
