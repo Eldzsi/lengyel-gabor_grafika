@@ -117,28 +117,28 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_W:
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_speed(&(app->camera), 4);
+                    set_camera_speed(&(app->camera), 3);
                 } else {
                     set_camera_speed(&(app->camera), 1);
                 }
                 break;
             case SDL_SCANCODE_S:
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_speed(&(app->camera), -4);
+                    set_camera_speed(&(app->camera), -3);
                 } else {
                     set_camera_speed(&(app->camera), -1);
                 }
                 break;
             case SDL_SCANCODE_A:
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_side_speed(&(app->camera), 4);
+                    set_camera_side_speed(&(app->camera), 3);
                 } else {
                     set_camera_side_speed(&(app->camera), 1);
                 }
                 break;
             case SDL_SCANCODE_D:
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_side_speed(&(app->camera), -4);
+                    set_camera_side_speed(&(app->camera), -3);
                 } else {
                     set_camera_side_speed(&(app->camera), -1);
                 }
@@ -155,16 +155,16 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_LSHIFT:
                 if (is_key_pressed(SDL_SCANCODE_W)) {
-                    set_camera_speed(&(app->camera), 4);
+                    set_camera_speed(&(app->camera), 3);
                 }
                 if (is_key_pressed(SDL_SCANCODE_S)) {
-                    set_camera_speed(&(app->camera), -4);
+                    set_camera_speed(&(app->camera), -3);
                 }
                 if (is_key_pressed(SDL_SCANCODE_A)) {
-                    set_camera_side_speed(&(app->camera), 4);
+                    set_camera_side_speed(&(app->camera), 3);
                 }
                 if (is_key_pressed(SDL_SCANCODE_D)) {
-                    set_camera_side_speed(&(app->camera), -4);
+                    set_camera_side_speed(&(app->camera), -3);
                 }
                 break;
             case SDL_SCANCODE_SPACE:
