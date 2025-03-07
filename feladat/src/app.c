@@ -186,19 +186,17 @@ void handle_app_events(App* app) {
                 }
                 break;
             case SDL_SCANCODE_SPACE:
-
-                if (app->camera.is_crouching) {
-                    app->camera.position.z += 0.8;
-                }
-                app->camera.is_crouching = false;
-
                 if (!app->camera.is_jumping) { 
+                    if (app->camera.is_crouching) {
+                        app->camera.position.z += 0.8;
+                    }
+                    app->camera.is_crouching = false;
+
                     app->camera.is_jumping = true;
                     app->camera.speed.z = 5;
+
+                    play_sound();
                 }
-
-                play_sound();
-
                 break;
             default:
                 break;
