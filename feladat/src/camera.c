@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+#include "app.h"
+
 
 void init_camera(Camera* camera) {
     camera->position.x = 0.0;
@@ -49,6 +51,14 @@ void update_camera(Camera* camera, double time) {
         camera->position.z = ground_level + offset;
         camera->speed.z = 0.0;
         camera->is_jumping = false;
+
+        if (!is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+            camera->is_sprinting = false;
+            if (camera->speed.y > 1) camera->speed.y = 1;
+            if (camera->speed.y < -1) camera->speed.y = -1;
+            if (camera->speed.x > 1) camera->speed.x = 1;
+            if (camera->speed.x < -1) camera->speed.x = -1;
+        }
     }
 }
 
