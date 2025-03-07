@@ -8,7 +8,7 @@
 void init_camera(Camera* camera) {
     camera->position.x = 0.0;
     camera->position.y = 0.0;
-    camera->position.z = 2.0;
+    camera->position.z = 3.0;
     camera->rotation.x = 0.0;
     camera->rotation.y = 0.0;
     camera->rotation.z = 0.0;
@@ -41,7 +41,7 @@ void update_camera(Camera* camera, double time) {
         camera->position.z += camera->speed.z * time;
     }
 
-    double offset = (camera->is_crouching) ? 1.5 : 2.0;
+    double offset = (camera->is_crouching) ? 1.5 : 3.0;
 
     if (camera->position.z > ground_level + offset) {
         camera->speed.z -= gravity * time;
