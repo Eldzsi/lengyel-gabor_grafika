@@ -1,5 +1,10 @@
 #include <stdio.h>
+
+#include <SDL_mixer.h>
+
 #include "app.h"
+
+#include "sound.h"
 
 #include <SDL2/SDL_image.h>
 
@@ -15,6 +20,19 @@ void init_app(App* app, int width, int height) {
         printf("[ERROR] SDL initialization error: %s\n", SDL_GetError());
         return;
     }
+
+    if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0) {
+        printf("[ERROR] SDL_mixer initialization error: %s\n", Mix_GetError());
+        return;
+    }
+
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
+        printf("[ERROR] SDL_mixer audio initialization error: %s\n", Mix_GetError());
+        return;
+    }
+
+    
+    load_sound();
 
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
@@ -179,6 +197,8 @@ void handle_app_events(App* app) {
                     app->camera.speed.z = 5;
                 }
 
+                play_sound();
+
                 break;
             default:
                 break;
@@ -260,6 +280,10 @@ void destroy_app(App* app) {
     if (app->window != NULL) {
         SDL_DestroyWindow(app->window);
     }
+
+    free_sound();
+    Mix_CloseAudio();
+    Mix_Quit();
 
     SDL_Quit();
 }
