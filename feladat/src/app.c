@@ -98,7 +98,6 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 
-
 SDL_bool is_key_pressed(SDL_Scancode key) {
     const Uint8* state = SDL_GetKeyboardState(NULL);
     return state[key] != 0;
@@ -236,7 +235,7 @@ void update_app(App* app) {
     app->uptime = current_time;
 
     update_camera(&(app->camera), elapsed_time);
-    update_scene(&(app->scene));
+    // update_scene(&(app->scene));
 }
 
 

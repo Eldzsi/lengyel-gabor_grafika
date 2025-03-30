@@ -6,10 +6,21 @@
 
 #include <obj/model.h>
 
-typedef struct Scene {
-    Model table;
-    Material material;
+#define MAX_OBJECTS 100
+
+typedef struct Object {
+    Model model;
     GLuint texture_id;
+    vec3 position;
+    vec3 scale;
+    char model_path[128];
+    char texture_path[128];
+} Object;
+
+typedef struct Scene {
+    Object objects[MAX_OBJECTS];
+    int object_count;
+    Material material;
 } Scene;
 
 void init_scene(Scene* scene);
@@ -18,10 +29,10 @@ void set_lighting();
 
 void set_material(const Material* material);
 
-void update_scene(Scene* scene);
+// void update_scene(Scene* scene);
+
+void render_floor(float size);
 
 void render_scene(const Scene* scene);
-
-void draw_origin();
 
 #endif
