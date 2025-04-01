@@ -12,6 +12,7 @@ typedef struct Object {
     Model model;
     GLuint texture_id;
     vec3 position;
+    vec3 rotation;
     vec3 scale;
     char model_path[128];
     char texture_path[128];
@@ -22,6 +23,8 @@ typedef struct Scene {
     int object_count;
     Material material;
 } Scene;
+
+void load_object_data_from_csv(Scene* scene, const char* filename);
 
 void init_scene(Scene* scene);
 

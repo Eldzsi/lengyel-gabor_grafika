@@ -1,73 +1,46 @@
 #include "scene.h"
 
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <obj/load.h>
 #include <obj/draw.h>
 
 
-void init_scene(Scene* scene) {
-    const char* model_paths[] = {
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj",
-        "assets/models/table.obj"
-    };
-
-    const char* texture_paths[] = {
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg",
-        "assets/textures/table.jpg"
-    };
-
-    vec3 positions[] = {
-        {0.0f, 0.0f, 2.0f},
-        {1.5f, 0.0f, 2.0f},
-        {-1.5f, 0.0f, 2.0f},
-        {0.0f, -2.5f, 2.0f},
-        {1.5f, -2.5f, 2.0f},
-        {-1.5f, -2.5f, 2.0f},
-        {0.0f, 2.5f, 2.0f},
-        {1.5f, 2.5f, 2.0f},
-        {-1.5f, 2.5f, 2.0f},
-    };
-
-    vec3 scales[] = {
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f},
-        {0.008f, 0.008f, 0.008f}
-    };
-
-    scene->object_count = sizeof(positions) / sizeof(positions[0]);
-
-    for (int i = 0; i < scene->object_count; i++) {
-        strncpy(scene->objects[i].model_path, model_paths[i], sizeof(scene->objects[i].model_path));
-        strncpy(scene->objects[i].texture_path, texture_paths[i], sizeof(scene->objects[i].texture_path));
-
-        load_model(&scene->objects[i].model, scene->objects[i].model_path);
-        scene->objects[i].texture_id = load_texture(scene->objects[i].texture_path);
-        
-        scene->objects[i].position = positions[i];
-        scene->objects[i].scale = scales[i];
+void load_object_data_from_csv(Scene* scene, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("[Error] Unable to open objects.csv");
+        return;
     }
+
+    char line[256];
+    fgets(line, sizeof(line), file);
+
+    scene->object_count = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        Object obj;
+
+        sscanf(line, "%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f",
+            obj.model_path, obj.texture_path,
+            &obj.position.x, &obj.position.y, &obj.position.z,
+            &obj.rotation.x, &obj.rotation.y, &obj.rotation.z,
+            &obj.scale.x, &obj.scale.y, &obj.scale.z);
+
+        load_model(&obj.model, obj.model_path);
+        obj.texture_id = load_texture(obj.texture_path);
+
+        scene->objects[scene->object_count++] = obj;
+    }
+
+    fclose(file);
+}
+
+
+void init_scene(Scene* scene) {
+    load_object_data_from_csv(scene, "objects.csv");
 
     scene->material.ambient.red = 0.1;
     scene->material.ambient.green = 0.1;
@@ -159,7 +132,13 @@ void render_scene(const Scene* scene) {
     for (int i = 0; i < scene->object_count; i++) {
         glPushMatrix();
         glTranslatef(scene->objects[i].position.x, scene->objects[i].position.y, scene->objects[i].position.z);
+
+        glRotatef(scene->objects[i].rotation.x, 1.0f, 0.0f, 0.0f);
+        glRotatef(scene->objects[i].rotation.y, 0.0f, 1.0f, 0.0f);
+        glRotatef(scene->objects[i].rotation.z, 0.0f, 0.0f, 1.0f);
+
         glScalef(scene->objects[i].scale.x, scene->objects[i].scale.y, scene->objects[i].scale.z);
+        
         draw_model(&scene->objects[i].model);
         glPopMatrix();
     }
