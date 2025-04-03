@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <obj/load.h>
 #include <obj/draw.h>
@@ -58,23 +59,35 @@ void init_scene(Scene* scene) {
 }
 
 
-void set_lighting() {
-    float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+void set_lighting(const Camera* camera) {
+    float ambient_light[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     float diffuse_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float position[] = { 0.0f, 6.0f, 10.0f, 1.0f };
-    // float direction[] = { 0.0f, -1.0f, 0.0f };
-    // float cutoff = 40.0f;
-    // float exponent = 20.0f
+    float specular_light[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+    float position[] = {
+        camera->position.x,
+        camera->position.y,
+        camera->position.z,
+        1.0f
+    };
+
+    float direction[] = {
+        cos(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
+        sin(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
+        sin(degree_to_radian(camera->rotation.x))
+    };
+
+    float cutoff = 60.0f;
+    float exponent = 30.0f;
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-    // glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, direction);
-    // glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutoff);
-    // glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, direction);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutoff);
+    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
 }
 
 
@@ -120,9 +133,9 @@ void render_floor(float size) {
 }
 
 
-void render_scene(const Scene* scene) {
+void render_scene(const Scene* scene, const Camera* camera) {
     set_material(&(scene->material));
-    set_lighting();
+    set_lighting(camera);
 
     glPushMatrix();
     glScalef(10, 10, 1);

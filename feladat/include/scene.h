@@ -36,6 +36,6 @@ void set_material(const Material* material);
 
 void render_floor(float size);
 
-void render_scene(const Scene* scene);
+void render_scene(const Scene* scene, const Camera* camera);
 
 #endif

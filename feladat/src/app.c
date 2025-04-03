@@ -52,6 +52,8 @@ void init_app(App* app, int width, int height) {
 
     app->is_running = true;
 
+    app->flashlight_on = false;
+
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
 }
@@ -75,7 +77,6 @@ void init_opengl() {
     glEnable(GL_TEXTURE_2D);
 
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
 }
 
 
@@ -192,6 +193,14 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), 0);
                 break;
+            case SDL_SCANCODE_F:
+                app->flashlight_on = !app->flashlight_on;
+                if (app->flashlight_on) {
+                    glEnable(GL_LIGHT0);
+                } else {
+                    glDisable(GL_LIGHT0);
+                }
+                break;
             case SDL_SCANCODE_LSHIFT:
                 if (!app->camera.is_jumping) {
                     if (is_key_pressed(SDL_SCANCODE_W)) {
@@ -245,8 +254,8 @@ void render_app(App* app) {
 
     glPushMatrix();
     set_view(&(app->camera));
-    render_scene(&(app->scene));
-    glPopMatrix();
+    render_scene(&(app->scene), &(app->camera));
+    glPopMatrix();   
 
     SDL_GL_SwapWindow(app->window);
 }

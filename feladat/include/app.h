@@ -20,6 +20,7 @@ typedef struct App {
     double uptime;
     Camera camera;
     Scene scene;
+    bool flashlight_on;
 } App;
 
 void init_app(App* app, int width, int height);
