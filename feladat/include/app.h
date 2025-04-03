@@ -37,4 +37,6 @@ void render_app(App* app);
 
 void destroy_app(App* app);
 
+SDL_bool is_key_pressed(SDL_Scancode key);
+
 #endif
