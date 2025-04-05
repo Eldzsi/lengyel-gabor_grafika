@@ -22,13 +22,14 @@ typedef struct Scene {
     Object objects[MAX_OBJECTS];
     int object_count;
     Material material;
+    float flashlight_intensity;
 } Scene;
 
 void load_object_data_from_csv(Scene* scene, const char* filename);
 
 void init_scene(Scene* scene);
 
-void set_lighting();
+void set_lighting(const Camera* camera, float intensity);
 
 void set_material(const Material* material);
 

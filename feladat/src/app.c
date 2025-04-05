@@ -225,6 +225,19 @@ void handle_app_events(App* app) {
             SDL_GetRelativeMouseState(&rel_x, &rel_y);
             rotate_camera(&(app->camera), -rel_x, -rel_y);
             break;
+            case SDL_MOUSEWHEEL:
+            if (event.wheel.y > 0) {
+                app->scene.flashlight_intensity += 0.1f;
+                if (app->scene.flashlight_intensity > 1.0f) {
+                    app->scene.flashlight_intensity = 1.0f;
+                }
+            } else if (event.wheel.y < 0) {
+                app->scene.flashlight_intensity -= 0.1f;
+                if (app->scene.flashlight_intensity < 0.0f) {
+                    app->scene.flashlight_intensity = 0.0f;
+                }
+            }
+            break;
         case SDL_QUIT:
             app->is_running = false;
             break;

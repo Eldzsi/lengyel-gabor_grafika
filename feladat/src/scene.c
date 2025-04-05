@@ -56,13 +56,15 @@ void init_scene(Scene* scene) {
     scene->material.specular.blue = 0.0;
 
     scene->material.shininess = 0.0;
+
+    scene->flashlight_intensity = 0.5;
 }
 
 
-void set_lighting(const Camera* camera) {
-    float ambient_light[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    float diffuse_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float specular_light[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+void set_lighting(const Camera* camera, float intensity) {
+    float ambient_light[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
+    float diffuse_light[] = { 1.0f * intensity, 1.0f * intensity, 1.0f * intensity, 1.0f };
+    float specular_light[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
 
     float position[] = {
         camera->position.x,
@@ -135,7 +137,7 @@ void render_floor(float size) {
 
 void render_scene(const Scene* scene, const Camera* camera) {
     set_material(&(scene->material));
-    set_lighting(camera);
+    set_lighting(camera, scene->flashlight_intensity);
 
     glPushMatrix();
     glScalef(10, 10, 1);
