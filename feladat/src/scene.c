@@ -66,34 +66,45 @@ void init_scene(Scene* scene) {
 
 
 void set_lighting(const Camera* camera, float intensity) {
-    float ambient_light[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
-    float diffuse_light[] = { 1.0f * intensity, 1.0f * intensity, 1.0f * intensity, 1.0f };
-    float specular_light[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
+    float ambient_light0[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
+    float diffuse_light0[] = { 1.0f * intensity, 1.0f * intensity, 1.0f * intensity, 1.0f };
+    float specular_light0[] = { 0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f };
 
-    float position[] = {
+    float position0[] = {
         camera->position.x,
         camera->position.y,
         camera->position.z,
         1.0f
     };
 
-    float direction[] = {
+    float direction0[] = {
         cos(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
         sin(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
         sin(degree_to_radian(camera->rotation.x))
     };
 
-    float cutoff = 60.0f;
-    float exponent = 30.0f;
+    float cutoff0 = 60.0f;
+    float exponent0 = 30.0f;
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light0);
+    glLightfv(GL_LIGHT0, GL_POSITION, position0);
 
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, direction);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutoff);
-    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, direction0);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, cutoff0);
+    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, exponent0);
+
+    float ambient_light1[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    float diffuse_light1[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+    float specular_light1[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    float position1[] = { 0.0f, 0.0f, 10.0f, 0.0f };
+
+    glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_light1);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular_light1);
+    glLightfv(GL_LIGHT1, GL_POSITION, position1);
 }
 
 
