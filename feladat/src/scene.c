@@ -32,6 +32,11 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
 
         load_model(&obj.model, obj.model_path);
         obj.texture_id = load_texture(obj.texture_path);
+  
+        get_model_size(&obj.model, &obj.original_size.x, &obj.original_size.y, &obj.original_size.z);
+        printf("\nLoaded model: %s\n", obj.model_path);
+        printf("Model size (W x D x H): %.2f x %.2f x %.2f\n", obj.original_size.x, obj.original_size.y, obj.original_size.z);
+        printf("Scaled model size (W x D x H): %.2f x %.2f x %.2f\n\n", obj.original_size.x * obj.scale.x, obj.original_size.y * obj.scale.y, obj.original_size.z * obj.scale.z);
 
         scene->objects[scene->object_count++] = obj;
     }
@@ -157,4 +162,31 @@ void render_scene(const Scene* scene, const Camera* camera) {
         draw_model(&scene->objects[i].model);
         glPopMatrix();
     }
+}
+
+
+void get_model_size(const Model* model, float* width, float* depth, float* height) {
+    if (model->n_vertices == 0 || model->vertices == NULL) {
+        *width = *depth = *height = 0.0f;
+        return;
+    }
+
+    double min_x = model->vertices[0].x, max_x = model->vertices[0].x;
+    double min_y = model->vertices[0].y, max_y = model->vertices[0].y;
+    double min_z = model->vertices[0].z, max_z = model->vertices[0].z;
+
+    for (int i = 1; i < model->n_vertices; i++) {
+        if (model->vertices[i].x < min_x) min_x = model->vertices[i].x;
+        if (model->vertices[i].x > max_x) max_x = model->vertices[i].x;
+
+        if (model->vertices[i].y < min_y) min_y = model->vertices[i].y;
+        if (model->vertices[i].y > max_y) max_y = model->vertices[i].y;
+
+        if (model->vertices[i].z < min_z) min_z = model->vertices[i].z;
+        if (model->vertices[i].z > max_z) max_z = model->vertices[i].z;
+    }
+
+    *width = (float)(max_x - min_x);
+    *depth = (float)(max_y - min_y);
+    *height = (float)(max_z - min_z);
 }

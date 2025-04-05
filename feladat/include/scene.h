@@ -11,6 +11,7 @@
 typedef struct Object {
     Model model;
     GLuint texture_id;
+    vec3 original_size;
     vec3 position;
     vec3 rotation;
     vec3 scale;
@@ -38,5 +39,7 @@ void set_material(const Material* material);
 void render_floor(float size);
 
 void render_scene(const Scene* scene, const Camera* camera);
+
+void get_model_size(const Model* model, float* width, float* depth, float* height);
 
 #endif
