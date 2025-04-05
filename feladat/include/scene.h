@@ -11,13 +11,20 @@
 typedef struct Object {
     Model model;
     GLuint texture_id;
-    vec3 original_size;
+    vec3 size;
+    vec3 min;
+    vec3 max;
     vec3 position;
     vec3 rotation;
     vec3 scale;
     char model_path[128];
     char texture_path[128];
 } Object;
+
+typedef struct BoundingBox {
+    vec3 min;
+    vec3 max;
+} BoundingBox;
 
 typedef struct Scene {
     Object objects[MAX_OBJECTS];
@@ -40,6 +47,10 @@ void render_floor(float size);
 
 void render_scene(const Scene* scene, const Camera* camera);
 
-void get_model_size(const Model* model, float* width, float* depth, float* height);
+void get_model_size(const Model* model, float* width, float* depth, float* height, vec3* min_out, vec3* max_out);
+
+BoundingBox calculate_bounding_box(const Object* obj);
+
+void draw_bounding_box(BoundingBox box);
 
 #endif

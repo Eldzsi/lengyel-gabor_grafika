@@ -33,10 +33,9 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
         load_model(&obj.model, obj.model_path);
         obj.texture_id = load_texture(obj.texture_path);
   
-        get_model_size(&obj.model, &obj.original_size.x, &obj.original_size.y, &obj.original_size.z);
+        get_model_size(&obj.model, &obj.size.x, &obj.size.y, &obj.size.z, &obj.min, &obj.max);
         printf("\nLoaded model: %s\n", obj.model_path);
-        printf("Model size (W x D x H): %.2f x %.2f x %.2f\n", obj.original_size.x, obj.original_size.y, obj.original_size.z);
-        printf("Scaled model size (W x D x H): %.2f x %.2f x %.2f\n\n", obj.original_size.x * obj.scale.x, obj.original_size.y * obj.scale.y, obj.original_size.z * obj.scale.z);
+        printf("Model size (W x D x H): %.2f x %.2f x %.2f\n", obj.size.x, obj.size.y, obj.size.z);
 
         scene->objects[scene->object_count++] = obj;
     }
@@ -160,12 +159,17 @@ void render_scene(const Scene* scene, const Camera* camera) {
         glScalef(scene->objects[i].scale.x, scene->objects[i].scale.y, scene->objects[i].scale.z);
         
         draw_model(&scene->objects[i].model);
+
+        BoundingBox box = calculate_bounding_box(&scene->objects[i]);
+        draw_bounding_box(box);
+
         glPopMatrix();
     }
+
 }
 
 
-void get_model_size(const Model* model, float* width, float* depth, float* height) {
+void get_model_size(const Model* model, float* width, float* depth, float* height, vec3* min, vec3* max) {
     if (model->n_vertices == 0 || model->vertices == NULL) {
         *width = *depth = *height = 0.0f;
         return;
@@ -189,4 +193,53 @@ void get_model_size(const Model* model, float* width, float* depth, float* heigh
     *width = (float)(max_x - min_x);
     *depth = (float)(max_y - min_y);
     *height = (float)(max_z - min_z);
+
+    min->x = min_x;
+    min->y = min_y;
+    min->z = min_z;
+
+    max->x = max_x;
+    max->y = max_y;
+    max->z = max_z;
+}
+
+
+BoundingBox calculate_bounding_box(const Object* obj) {
+    BoundingBox box;
+
+    box.min.x = obj->position.x + obj->min.x;
+    box.max.x = obj->position.x + obj->max.x;
+
+    box.min.y = obj->position.y + obj->min.y;
+    box.max.y = obj->position.y + obj->max.y;
+
+    box.min.z = obj->position.z + obj->min.z;
+    box.max.z = obj->position.z + obj->max.z;
+
+    return box;
+}
+
+
+void draw_bounding_box(BoundingBox box) {
+    glDisable(GL_LIGHTING);
+
+    glColor3f(1.0f, 1.0f, 0.0f);
+
+    glBegin(GL_LINES);
+        glVertex3f(box.min.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.min.y, box.min.z);
+        glVertex3f(box.max.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.max.y, box.min.z);
+        glVertex3f(box.max.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.max.y, box.min.z);
+        glVertex3f(box.min.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.min.y, box.min.z);
+
+        glVertex3f(box.min.x, box.min.y, box.max.z); glVertex3f(box.max.x, box.min.y, box.max.z);
+        glVertex3f(box.max.x, box.min.y, box.max.z); glVertex3f(box.max.x, box.max.y, box.max.z);
+        glVertex3f(box.max.x, box.max.y, box.max.z); glVertex3f(box.min.x, box.max.y, box.max.z);
+        glVertex3f(box.min.x, box.max.y, box.max.z); glVertex3f(box.min.x, box.min.y, box.max.z);
+
+        glVertex3f(box.min.x, box.min.y, box.min.z); glVertex3f(box.min.x, box.min.y, box.max.z);
+        glVertex3f(box.max.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.min.y, box.max.z);
+        glVertex3f(box.max.x, box.max.y, box.min.z); glVertex3f(box.max.x, box.max.y, box.max.z);
+        glVertex3f(box.min.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.max.y, box.max.z);
+        glEnd();
+    glEnable(GL_LIGHTING);
 }
