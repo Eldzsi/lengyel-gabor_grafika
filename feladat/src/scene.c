@@ -31,6 +31,7 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
             &obj.scale.x, &obj.scale.y, &obj.scale.z);
 
         load_model(&obj.model, obj.model_path);
+        
         obj.texture_id = load_texture(obj.texture_path);
   
         get_model_size(&obj.model, &obj.size.x, &obj.size.y, &obj.size.z, &obj.min, &obj.max);
@@ -53,7 +54,7 @@ void init_scene(Scene* scene) {
 
     scene->material.diffuse.red = 1.0;
     scene->material.diffuse.green = 1.0;
-    scene->material.diffuse.blue = 0.0;
+    scene->material.diffuse.blue = 1.0;
 
     scene->material.specular.red = 0.0;
     scene->material.specular.green = 0.0;
@@ -169,6 +170,8 @@ void render_scene(const Scene* scene, const Camera* camera) {
 
         glScalef(scene->objects[i].scale.x, scene->objects[i].scale.y, scene->objects[i].scale.z);
         
+        glBindTexture(GL_TEXTURE_2D, scene->objects[i].texture_id);
+
         draw_model(&scene->objects[i].model);
 
         BoundingBox box = calculate_bounding_box(&scene->objects[i]);
