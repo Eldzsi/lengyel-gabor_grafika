@@ -28,6 +28,7 @@ typedef struct BoundingBox {
 
 typedef struct Scene {
     Object objects[MAX_OBJECTS];
+    BoundingBox bounding_boxes[MAX_OBJECTS];
     int object_count;
     Material material;
     float flashlight_intensity;
@@ -51,6 +52,6 @@ void get_model_size(const Model* model, float* width, float* depth, float* heigh
 
 BoundingBox calculate_bounding_box(const Object* obj);
 
-void draw_bounding_box(BoundingBox box);
+void draw_bounding_boxes(const Scene* scene);
 
 #endif
