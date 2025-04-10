@@ -145,14 +145,12 @@ void handle_app_events(App* app) {
                 }
                 break;
             case SDL_SCANCODE_C:
-                if (!app->camera.is_jumping) {
-                    if (app->camera.is_crouching) {
-                        app->camera.position.z += 0.8;
-                    } else {
-                        app->camera.position.z -= 0.8;
-                    }
-                    app->camera.is_crouching = !app->camera.is_crouching;
+                if (app->camera.is_crouching) {
+                    app->camera.position.z += 0.8;
+                } else {
+                    app->camera.position.z -= 0.8;
                 }
+                app->camera.is_crouching = !app->camera.is_crouching;
                 break;
             case SDL_SCANCODE_LSHIFT:
                 if (is_key_pressed(SDL_SCANCODE_W)) {
@@ -169,14 +167,8 @@ void handle_app_events(App* app) {
                 }
                 break;
             case SDL_SCANCODE_SPACE:
-                if (!app->camera.is_jumping) { 
-                    if (app->camera.is_crouching) {
-                        app->camera.position.z += 0.8;
-                    }
-                    app->camera.is_crouching = false;
-
-                    app->camera.is_jumping = true;
-                    app->camera.speed.z = 5;
+                if (check_collision(app->camera.position.x, app->camera.position.y, app->camera.position.z - 0.1, &(app->scene), app->camera.is_crouching)) {
+                    app->camera.speed.z = 4.0;
                 }
                 break;
             default:
@@ -185,14 +177,42 @@ void handle_app_events(App* app) {
             break;
         case SDL_KEYUP:
             switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_W:
-            case SDL_SCANCODE_S:
-                set_camera_speed(&(app->camera), 0);
-                break;
-            case SDL_SCANCODE_A:
-            case SDL_SCANCODE_D:
-                set_camera_side_speed(&(app->camera), 0);
-                break;
+                case SDL_SCANCODE_W:
+                case SDL_SCANCODE_S:
+                    if (is_key_pressed(SDL_SCANCODE_W)) {
+                        if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                            set_camera_side_speed(&(app->camera), 3);
+                        } else {
+                            set_camera_side_speed(&(app->camera), 1);
+                        }
+                    } else if (is_key_pressed(SDL_SCANCODE_S)) {
+                        if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                            set_camera_side_speed(&(app->camera), -3);
+                        } else {
+                            set_camera_side_speed(&(app->camera), -1);
+                        }
+                    } else {
+                        set_camera_speed(&(app->camera), 0);
+                    }
+                    break;
+                case SDL_SCANCODE_A:
+                case SDL_SCANCODE_D:
+                    if (is_key_pressed(SDL_SCANCODE_A)) {
+                        if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                            set_camera_side_speed(&(app->camera), 3);
+                        } else {
+                            set_camera_side_speed(&(app->camera), 1);
+                        }
+                    } else if (is_key_pressed(SDL_SCANCODE_D)) {
+                        if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                            set_camera_side_speed(&(app->camera), -3);
+                        } else {
+                            set_camera_side_speed(&(app->camera), -1);
+                        }
+                    } else {
+                        set_camera_side_speed(&(app->camera), 0);
+                    }
+                    break;
             case SDL_SCANCODE_F:
                 app->flashlight_on = !app->flashlight_on;
                 if (app->flashlight_on) {
@@ -202,19 +222,17 @@ void handle_app_events(App* app) {
                 }
                 break;
             case SDL_SCANCODE_LSHIFT:
-                if (!app->camera.is_jumping) {
-                    if (is_key_pressed(SDL_SCANCODE_W)) {
-                        set_camera_speed(&(app->camera), 1);
-                    }
-                    if (is_key_pressed(SDL_SCANCODE_S)) {
-                        set_camera_speed(&(app->camera), -1);
-                    }
-                    if (is_key_pressed(SDL_SCANCODE_A)) {
-                        set_camera_side_speed(&(app->camera), 1);
-                    }
-                    if (is_key_pressed(SDL_SCANCODE_D)) {
-                        set_camera_side_speed(&(app->camera), -1);
-                    }
+                if (is_key_pressed(SDL_SCANCODE_W)) {
+                    set_camera_speed(&(app->camera), 1);
+                }
+                if (is_key_pressed(SDL_SCANCODE_S)) {
+                    set_camera_speed(&(app->camera), -1);
+                }
+                if (is_key_pressed(SDL_SCANCODE_A)) {
+                    set_camera_side_speed(&(app->camera), 1);
+                }
+                if (is_key_pressed(SDL_SCANCODE_D)) {
+                    set_camera_side_speed(&(app->camera), -1);
                 }
                 break;
             default:
@@ -256,7 +274,7 @@ void update_app(App* app) {
     elapsed_time = current_time - app->uptime;
     app->uptime = current_time;
 
-    update_camera(&(app->camera), elapsed_time);
+    update_camera(&(app->camera), elapsed_time, &(app->scene));
     // update_scene(&(app->scene));
 }
 

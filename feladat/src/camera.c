@@ -8,9 +8,9 @@
 
 
 void init_camera(Camera* camera) {
-    camera->position.x = 0.0;
+    camera->position.x = -5.0;
     camera->position.y = 0.0;
-    camera->position.z = 3.0;
+    camera->position.z = 100.0;
     camera->rotation.x = 0.0;
     camera->rotation.y = 0.0;
     camera->rotation.z = 0.0;
@@ -20,46 +20,84 @@ void init_camera(Camera* camera) {
 
     camera->is_crouching = false;
     camera->is_sprinting = false;
-    camera->is_jumping = false;
 }
 
 
-void update_camera(Camera* camera, double time) {
-    double angle;
-    double side_angle;
+void update_camera(Camera* camera, double time, Scene* scene) {
+    double angle = degree_to_radian(camera->rotation.z);
+    double side_angle = degree_to_radian(camera->rotation.z + 90.0);
+    const float gravity = -9.8f;
 
-    const float gravity = 18;
-    const float ground_level = 0.0;
+    double next_x = camera->position.x + cos(angle) * camera->speed.y * time;
+    double next_y = camera->position.y + sin(angle) * camera->speed.y * time;
 
-    angle = degree_to_radian(camera->rotation.z);
-    side_angle = degree_to_radian(camera->rotation.z + 90.0);
-
-    camera->position.x += cos(angle) * camera->speed.y * time;
-    camera->position.y += sin(angle) * camera->speed.y * time;
-    camera->position.x += cos(side_angle) * camera->speed.x * time;
-    camera->position.y += sin(side_angle) * camera->speed.x * time;
-
-    if (camera->is_jumping) {
-        camera->position.z += camera->speed.z * time;
+    if (!check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching)) {
+        camera->position.x = next_x;
+    }
+    if (!check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching)) {
+        camera->position.y = next_y;
     }
 
-    double offset = (camera->is_crouching) ? 1.5 : 3.0;
+    next_x = camera->position.x + cos(side_angle) * camera->speed.x * time;
+    next_y = camera->position.y + sin(side_angle) * camera->speed.x * time;
 
-    if (camera->position.z > ground_level + offset) {
-        camera->speed.z -= gravity * time;
+    if (!check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching)) {
+        camera->position.x = next_x;
+    }
+    if (!check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching)) {
+        camera->position.y = next_y;
+    }
+
+    camera->speed.z += gravity * time;
+
+    double next_z = camera->position.z + camera->speed.z * time;
+
+    if (!check_collision(camera->position.x, camera->position.y, next_z, scene, camera->is_crouching)) {
+        camera->position.z = next_z;
     } else {
-        camera->position.z = ground_level + offset;
-        camera->speed.z = 0.0;
-        camera->is_jumping = false;
-
-        if (!is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-            camera->is_sprinting = false;
-            if (camera->speed.y > 1) camera->speed.y = 1;
-            if (camera->speed.y < -1) camera->speed.y = -1;
-            if (camera->speed.x > 1) camera->speed.x = 1;
-            if (camera->speed.x < -1) camera->speed.x = -1;
+        if (camera->speed.z < 0) {
+            camera->speed.z = 0;
         }
     }
+}
+
+
+bool check_collision(double x, double y, double z, const Scene* scene, bool crouching) {
+    if (!crouching) {
+        for (int i = 0; i < scene->object_count; ++i) {
+            BoundingBox box = scene->bounding_boxes[i];
+            if (x >= box.min.x && x <= box.max.x &&
+                y >= box.min.y && y <= box.max.y &&
+                z >= box.min.z && z <= box.max.z) {
+                return true;
+            }
+        }
+
+        BoundingBox box = scene->floor_bounding_box;
+        if (x >= box.min.x && x <= box.max.x &&
+            y >= box.min.y && y <= box.max.y &&
+            z >= box.min.z && z <= box.max.z) {
+            return true;
+        }
+    } else {
+        for (int i = 0; i < scene->object_count; ++i) {
+            CrouchBoundingBox box = scene->crouch_bounding_boxes[i];
+            if (x >= box.min.x && x <= box.max.x &&
+                y >= box.min.y && y <= box.max.y &&
+                z >= box.min.z && z <= box.max.z) {
+                return true;
+            }
+        }
+
+        CrouchBoundingBox box = scene->floor_crouch_bounding_box;
+        if (x >= box.min.x && x <= box.max.x &&
+            y >= box.min.y && y <= box.max.y &&
+            z >= box.min.z && z <= box.max.z) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

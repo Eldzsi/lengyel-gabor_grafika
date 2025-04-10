@@ -8,6 +8,8 @@
 
 #define MAX_OBJECTS 100
 
+typedef struct Camera Camera;
+
 typedef struct Object {
     Model model;
     GLuint texture_id;
@@ -26,12 +28,21 @@ typedef struct BoundingBox {
     vec3 max;
 } BoundingBox;
 
+typedef struct CrouchBoundingBox {
+    vec3 min;
+    vec3 max;
+} CrouchBoundingBox;
+
 typedef struct Scene {
     Object objects[MAX_OBJECTS];
     BoundingBox bounding_boxes[MAX_OBJECTS];
+    CrouchBoundingBox crouch_bounding_boxes[MAX_OBJECTS];
+    BoundingBox floor_bounding_box;
+    CrouchBoundingBox floor_crouch_bounding_box;
     int object_count;
     Material material;
     float flashlight_intensity;
+    float floor_size;
 } Scene;
 
 void load_object_data_from_csv(Scene* scene, const char* filename);
@@ -44,7 +55,7 @@ void set_material(const Material* material);
 
 // void update_scene(Scene* scene);
 
-void render_floor(float size);
+void render_floor(const Scene* scene);
 
 void render_scene(const Scene* scene, const Camera* camera);
 
@@ -52,6 +63,10 @@ void get_model_size(const Model* model, float* width, float* depth, float* heigh
 
 BoundingBox calculate_bounding_box(const Object* obj);
 
+CrouchBoundingBox calculate_crouch_bounding_box(const Object* obj);
+
 void draw_bounding_boxes(const Scene* scene);
+
+void draw_crouch_bounding_boxes(const Scene* scene);
 
 #endif
