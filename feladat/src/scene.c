@@ -455,9 +455,9 @@ CrouchBoundingBox calculate_crouch_bounding_box(const Object* obj) {
         if (corners[i][2] > box.max.z) box.max.z = corners[i][2];
     }
 
-    float padding_x = 0.1f * obj->size.x;
-    float padding_y = 0.1f * obj->size.y;
-    float padding_z = 0.1f * obj->size.z;
+    float padding_x = 0.12f;
+    float padding_y = 0.12f;
+    float padding_z = 0.12f;
 
     box.min.x -= padding_x;
     box.max.x += padding_x;
@@ -472,7 +472,7 @@ CrouchBoundingBox calculate_crouch_bounding_box(const Object* obj) {
 
     box.max.x += obj->position.x;
     box.max.y += obj->position.y;
-    box.max.z += obj->position.z + 0.2;
+    box.max.z += obj->position.z + 0.2f;
 
     return box;
 }
