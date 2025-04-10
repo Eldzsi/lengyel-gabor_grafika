@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <obj/model.h>
+
 typedef struct vec3 {
     float x;
     float y;
@@ -21,5 +23,9 @@ typedef struct Material {
 } Material;
 
 double degree_to_radian(double degree);
+
+void rotate_point(float* x, float* y, float* z, float rx, float ry, float rz);
+
+void get_model_size(const Model* model, float* width, float* depth, float* height, vec3* min, vec3* max);
 
 #endif

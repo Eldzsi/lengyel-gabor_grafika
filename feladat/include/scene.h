@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "bounding_box.h"
 #include "camera.h"
 #include "texture.h"
 
@@ -22,11 +23,6 @@ typedef struct Object {
     char model_path[128];
     char texture_path[128];
 } Object;
-
-typedef struct BoundingBox {
-    vec3 min;
-    vec3 max;
-} BoundingBox;
 
 typedef struct Scene {
     Object objects[MAX_OBJECTS];
@@ -55,10 +51,6 @@ void render_floor(const Scene* scene);
 void render_scene(const Scene* scene, const Camera* camera);
 
 void get_model_size(const Model* model, float* width, float* depth, float* height, vec3* min_out, vec3* max_out);
-
-BoundingBox calculate_bounding_box(const Object* obj, float z_offset);
-
-void draw_bounding_boxes(const Scene* scene);
 
 void init_fog();
 
