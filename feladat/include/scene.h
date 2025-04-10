@@ -69,4 +69,6 @@ void draw_bounding_boxes(const Scene* scene);
 
 void draw_crouch_bounding_boxes(const Scene* scene);
 
+void init_fog();
+
 #endif

@@ -93,6 +93,8 @@ void init_scene(Scene* scene) {
 
     scene->floor_crouch_bounding_box.min.z = -0.1f;
     scene->floor_crouch_bounding_box.max.z = 0.3f;
+
+    init_fog();
 }
 
 
@@ -570,4 +572,17 @@ void draw_crouch_bounding_boxes(const Scene* scene) {
     glEnd();
 
     glEnable(GL_LIGHTING);
+}
+
+
+void init_fog() {
+    float fog_color[] = {0.3f, 0.3f, 0.3f, 1.0f};
+
+    glEnable(GL_FOG);
+
+    glFogi(GL_FOG_MODE, GL_EXP);
+
+    glFogfv(GL_FOG_COLOR, fog_color);
+
+    glFogf(GL_FOG_DENSITY, 0.5f);
 }
