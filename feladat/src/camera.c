@@ -81,7 +81,7 @@ bool check_collision(double x, double y, double z, const Scene* scene, bool crou
         }
     } else {
         for (int i = 0; i < scene->object_count; ++i) {
-            CrouchBoundingBox box = scene->crouch_bounding_boxes[i];
+            BoundingBox box = scene->crouch_bounding_boxes[i];
             if (x >= box.min.x && x <= box.max.x &&
                 y >= box.min.y && y <= box.max.y &&
                 z >= box.min.z && z <= box.max.z) {
@@ -89,7 +89,7 @@ bool check_collision(double x, double y, double z, const Scene* scene, bool crou
             }
         }
 
-        CrouchBoundingBox box = scene->floor_crouch_bounding_box;
+        BoundingBox box = scene->floor_crouch_bounding_box;
         if (x >= box.min.x && x <= box.max.x &&
             y >= box.min.y && y <= box.max.y &&
             z >= box.min.z && z <= box.max.z) {
