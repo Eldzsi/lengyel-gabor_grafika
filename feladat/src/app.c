@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "app.h"
+#include "sound.h"
 
 #include <SDL2/SDL_image.h>
 
@@ -11,7 +12,7 @@ void init_app(App* app, int width, int height) {
 
     app->is_running = false;
 
-    error_code = SDL_Init(SDL_INIT_EVERYTHING);
+    error_code = SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
     if (error_code != 0) {
         printf("[ERROR] SDL initialization error: %s\n", SDL_GetError());
         return;
@@ -50,12 +51,14 @@ void init_app(App* app, int width, int height) {
     init_camera(&(app->camera));
     init_scene(&(app->scene));
 
+    init_mixer();
+    play_sound("assets/sounds/lava.mp3", -1);
+
     app->is_running = true;
 
     app->flashlight_on = false;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
-
 }
 
 
@@ -169,6 +172,7 @@ void handle_app_events(App* app) {
             case SDL_SCANCODE_SPACE:
                 if (check_collision(app->camera.position.x, app->camera.position.y, app->camera.position.z - 0.1, &(app->scene), app->camera.is_crouching)) {
                     app->camera.speed.z = 4.0;
+                    play_sound("assets/sounds/jump.mp3", 0);
                 }
                 break;
             default:
@@ -301,5 +305,6 @@ void destroy_app(App* app) {
         SDL_DestroyWindow(app->window);
     }
 
+    destroy_mixer();
     SDL_Quit();
 }
