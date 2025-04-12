@@ -6,7 +6,7 @@
 #include <SDL2/SDL_image.h>
 
 
-void init_app(App* app, int width, int height) {
+void init_app(App* app) {
     int error_code;
     int inited_loaders;
 
@@ -20,13 +20,14 @@ void init_app(App* app, int width, int height) {
     
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    width = DM.w;
-    height = DM.h;
+
+    app->width = DM.w;
+    app->height = DM.h;
 
     app->window = SDL_CreateWindow(
         "Game",
         0, 0,
-        width, height,
+        app->width, app->height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (app->window == NULL) {
         printf("[ERROR] Unable to create the application window!\n");
@@ -46,7 +47,7 @@ void init_app(App* app, int width, int height) {
     }
 
     init_opengl();
-    reshape(width, height);
+    reshape(app->width, app->height);
 
     init_camera(&(app->camera));
     init_scene(&(app->scene));
@@ -59,6 +60,33 @@ void init_app(App* app, int width, int height) {
     app->flashlight_on = false;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
+
+    add_image(app, "assets/images/heart.png", 10, 10, 64, 64);
+    add_image(app, "assets/images/heart.png", 84, 10, 64, 64);
+    add_image(app, "assets/images/heart.png", 158, 10, 64, 64);
+}
+
+
+void add_image(App* app, char* filename, float x, float y, float width, float height) {
+    for (int i = 0; i < 10; i++) {
+        if (app->images[i].texture == 0) {
+            app->images[i].texture = load_texture(filename);
+            app->images[i].x = x;
+            app->images[i].y = y;
+            app->images[i].width = width;
+            app->images[i].height = height;
+            break;
+        }
+    }
+}
+
+
+void render_images(App* app) {
+    for (int i = 0; i < 10; i++) {
+        if (app->images[i].texture != 0) {
+            render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+        }
+    }
 }
 
 
@@ -83,21 +111,17 @@ void init_opengl() {
 }
 
 
-void reshape(GLsizei width, GLsizei height) {
+void reshape(int width, int height) {
     double ratio = (double)width / (double)height;
 
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     
-    double near = 0.08;
-    double far = 100.0;
-    double view_size = 0.08;
-
     glFrustum(
-        -view_size * ratio, view_size * ratio,
-        -view_size, view_size,
-        near, far
+        -0.08 * ratio, 0.08 * ratio,
+        -0.08, 0.08,
+        0.08, 100.0
     );
 }
 
@@ -285,12 +309,18 @@ void update_app(App* app) {
 
 void render_app(App* app) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    reshape(app->width, app->height);
+
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     glPushMatrix();
     set_view(&(app->camera));
     render_scene(&(app->scene), &(app->camera));
     glPopMatrix();   
+
+    render_images(app);
 
     SDL_GL_SwapWindow(app->window);
 }
@@ -303,6 +333,13 @@ void destroy_app(App* app) {
 
     if (app->window != NULL) {
         SDL_DestroyWindow(app->window);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        if (app->images[i].texture != 0) { 
+            glDeleteTextures(1, &(app->images[i].texture));
+            app->images[i].texture = 0;
+        }
     }
 
     destroy_mixer();

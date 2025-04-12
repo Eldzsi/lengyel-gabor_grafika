@@ -9,7 +9,8 @@ int main(int argc, char* argv[]) {
 
     App app;
 
-    init_app(&app, 800, 600);
+    init_app(&app);
+
     while (app.is_running) {
         handle_app_events(&app);
         update_app(&app);

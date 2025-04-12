@@ -202,6 +202,8 @@ void render_scene(const Scene* scene, const Camera* camera) {
 
 
 void render_floor(const Scene* scene) {
+    glDisable(GL_TEXTURE_2D);
+
     float size = scene->floor_size;
     int divisions = scene->floor_size * 10;
     float step = size / divisions;
@@ -224,6 +226,8 @@ void render_floor(const Scene* scene) {
             glEnd();
         }
     }
+
+    glEnable(GL_TEXTURE_2D);
 }
 
 
