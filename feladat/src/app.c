@@ -2,6 +2,7 @@
 
 #include "app.h"
 #include "sound.h"
+#include <string.h>
 
 #include <SDL2/SDL_image.h>
 
@@ -61,20 +62,28 @@ void init_app(App* app) {
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
+    for (int i = 0; i < 100; i++) {
+        app->images[i].texture = 0;
+    }
+
     add_image(app, "assets/images/heart.png", 10, 10, 64, 64);
     add_image(app, "assets/images/heart.png", 84, 10, 64, 64);
     add_image(app, "assets/images/heart.png", 158, 10, 64, 64);
+    add_image(app, "assets/images/flashlight_0.png", app->width - 90, app->height - 90, 80, 80);
+    add_image(app, "assets/images/flashlight_1.png", app->width - 90, app->height - 90, 80, 80);
+    add_image(app, "assets/images/key_f.png", app->width - 42, app->height - 37, 24, 24);
 }
 
 
 void add_image(App* app, char* filename, float x, float y, float width, float height) {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 100; i++) {
         if (app->images[i].texture == 0) {
             app->images[i].texture = load_texture(filename);
             app->images[i].x = x;
             app->images[i].y = y;
             app->images[i].width = width;
             app->images[i].height = height;
+            app->images[i].filename = filename;
             break;
         }
     }
@@ -82,9 +91,19 @@ void add_image(App* app, char* filename, float x, float y, float width, float he
 
 
 void render_images(App* app) {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 100; i++) {
         if (app->images[i].texture != 0) {
-            render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+            if (strcmp(app->images[i].filename, "assets/images/flashlight_0.png") == 0) {
+                if (!app->flashlight_on) {
+                    render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+                }
+            } else if (strcmp(app->images[i].filename, "assets/images/flashlight_1.png") == 0) {
+                if (app->flashlight_on) {
+                    render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+                }
+            } else {
+                render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+            }
         }
     }
 }
@@ -335,7 +354,7 @@ void destroy_app(App* app) {
         SDL_DestroyWindow(app->window);
     }
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 100; i++) {
         if (app->images[i].texture != 0) { 
             glDeleteTextures(1, &(app->images[i].texture));
             app->images[i].texture = 0;

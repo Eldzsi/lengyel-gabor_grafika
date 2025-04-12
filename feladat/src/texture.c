@@ -3,12 +3,18 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include <stdio.h>
+
 
 GLuint load_texture(char* filename) {
     SDL_Surface* surface;
     GLuint texture_name;
 
     surface = IMG_Load(filename);
+    if (surface == NULL) {
+        printf("\n[ERROR] Failed to load image: %s", IMG_GetError());
+        return 0;
+    }
 
     glGenTextures(1, &texture_name);
 

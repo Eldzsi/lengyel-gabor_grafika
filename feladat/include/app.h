@@ -17,6 +17,7 @@ typedef struct Image {
     float y; 
     float width;
     float height;
+    char* filename;
 } Image;
 
 typedef struct App {
@@ -29,7 +30,7 @@ typedef struct App {
     Camera camera;
     Scene scene;
     bool flashlight_on;
-    Image images[10];
+    Image images[100];
 } App;
 
 void init_app(App* app);
