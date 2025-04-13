@@ -1,4 +1,4 @@
-# Számítógépi grafika beadandó és gyakorlati feladatok
+# Számítógépi grafika féléves és gyakorlati feladatok
 
 **Név:** Lengyel Gábor
 
@@ -12,7 +12,7 @@ A **féléves beadandó feladat** megoldása a **feladat/** jegyzékben találha
 
 A make parancs kiadásával egyszerűen fordíthatók a programok.
 
-## Beadandó feladat specifikáció
+## Féléves feladat specifikáció
 
 A feladat célja egy háromdimenziós, platformer, ügyességi játék prototípusának implementálása. A játék lényege, hogy a játékos eljusson egy A pontból egy B pontba, miközben különböző akadályokon jut át. (például: szakadékok átugrása, tüskék kikerülése, stb.)
 
@@ -28,10 +28,13 @@ Az ugrás implementálásához szükséges a gravitáció megvalósítása is, a
 
 Elérhető egy zseblámpa is, ami egy spotlight és a kamerából indul. A fény követi a kamera mozgását. A lámpa az F billentyűvel kapcsolgatható, fényereje pedig a görgővel módosítható.
 
-## A beadandó feladathoz tartozó assetek
+## A féléves feladathoz tartozó assetek
 
-https://www.dropbox.com/scl/fi/bqicqyznk8vhco460hfo1/assets.zip?rlkey=tlvlh9vs6vybdvm3gdusnub74&st=4jr73r1l&dl=0
+https://www.dropbox.com/scl/fi/ulqk5n7brd0t2n8ji57pb/assets.zip?rlkey=qy6uiosg4invilrxra5ji707j&st=04yh4ttb&dl=0
 
-## A beadandó feladathoz szükséges könyvtárak
+## A féléves feladathoz szükséges könyvtárak
 
--
+https://www.dropbox.com/scl/fi/923vdpozzxg7wb1tn2ayq/dependencies.zip?rlkey=nhabf4zqms4mhx2i5d2tub1s5&st=0a0jalyy&dl=0
+
+- SDL_mixer
+
