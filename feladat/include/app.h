@@ -31,6 +31,7 @@ typedef struct App {
     Scene scene;
     bool flashlight_on;
     Image images[100];
+    bool cursor_mode;
 } App;
 
 void init_app(App* app);
