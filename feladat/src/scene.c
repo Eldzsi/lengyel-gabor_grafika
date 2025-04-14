@@ -77,8 +77,8 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
     while (fgets(line, sizeof(line), file)) {
         Object obj;
 
-        sscanf(line, "%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f",
-            obj.model_path, obj.texture_path,
+        sscanf(line, "%[^,],%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f",
+            obj.model_path, obj.texture_path, obj.name,
             &obj.position.x, &obj.position.y, &obj.position.z,
             &obj.rotation.x, &obj.rotation.y, &obj.rotation.z,
             &obj.scale.x, &obj.scale.y, &obj.scale.z);

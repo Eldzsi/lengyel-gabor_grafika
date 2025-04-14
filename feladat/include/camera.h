@@ -6,6 +6,7 @@
 
 #include <stdbool.h>
 
+typedef struct App App;
 typedef struct Scene Scene;
 
 typedef struct Camera {
@@ -16,9 +17,9 @@ typedef struct Camera {
     bool is_sprinting;
 } Camera;
 
-void init_camera(Camera* camera);
+void init_camera(Camera* camera, App* app);
 
-void update_camera(Camera* camera, double time, Scene* scene);
+void update_camera(Camera* camera, App* app, double time, Scene* scene);
 
 void set_view(const Camera* camera);
 
@@ -30,6 +31,6 @@ void set_camera_speed(Camera* camera, double speed);
 
 void set_camera_side_speed(Camera* camera, double speed);
 
-bool check_collision(double x, double y, double z, const Scene* scene, bool crouching);
+const char* check_collision(double x, double y, double z, const Scene* scene, bool crouching);
 
 #endif

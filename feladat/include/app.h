@@ -3,13 +3,16 @@
 
 #include <stdio.h>
 
-#include "camera.h"
 #include "scene.h"
+#include "camera.h"
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 
 #include <stdbool.h>
+
+typedef struct Scene Scene;
+typedef struct Camera Camera;
 
 typedef struct Image {
     GLuint texture; 
@@ -32,6 +35,7 @@ typedef struct App {
     bool flashlight_on;
     Image images[100];
     bool cursor_mode;
+    int health;
 } App;
 
 void init_app(App* app);

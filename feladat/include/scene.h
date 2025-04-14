@@ -22,6 +22,7 @@ typedef struct Object {
     vec3 scale;
     char model_path[128];
     char texture_path[128];
+    char name[32];
 } Object;
 
 typedef struct Scene {

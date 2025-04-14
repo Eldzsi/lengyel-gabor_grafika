@@ -52,7 +52,7 @@ void init_app(App* app) {
     init_opengl();
     reshape(app->width, app->height);
 
-    init_camera(&(app->camera));
+    init_camera(&(app->camera), app);
     init_scene(&(app->scene));
 
     init_mixer();
@@ -61,6 +61,8 @@ void init_app(App* app) {
     app->is_running = true;
 
     app->flashlight_on = false;
+
+    app->health = 3;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -71,6 +73,9 @@ void init_app(App* app) {
     add_image(app, "assets/images/heart.png", 10, 10, 64, 64);
     add_image(app, "assets/images/heart.png", 84, 10, 64, 64);
     add_image(app, "assets/images/heart.png", 158, 10, 64, 64);
+    add_image(app, "assets/images/dead_heart.png", 10, 10, 64, 64);
+    add_image(app, "assets/images/dead_heart.png", 84, 10, 64, 64);
+    add_image(app, "assets/images/dead_heart.png", 158, 10, 64, 64);
     add_image(app, "assets/images/flashlight_0.png", app->width - 90, app->height - 90, 80, 80);
     add_image(app, "assets/images/flashlight_1.png", app->width - 90, app->height - 90, 80, 80);
     add_image(app, "assets/images/key_f.png", app->width - 42, app->height - 37, 24, 24);
@@ -93,9 +98,32 @@ void add_image(App* app, char* filename, float x, float y, float width, float he
 
 
 void render_images(App* app) {
+    int heart_count = 0;
+    GLuint dead_heart_texture = 0;
+
+    for (int j = 0; j < 100; j++) {
+        if (strcmp(app->images[j].filename, "assets/images/dead_heart.png") == 0) {
+            dead_heart_texture = app->images[j].texture;
+            break;
+        }
+    }
+
     for (int i = 0; i < 100; i++) {
         if (app->images[i].texture != 0) {
-            if (strcmp(app->images[i].filename, "assets/images/flashlight_0.png") == 0) {
+            if (strcmp(app->images[i].filename, "assets/images/heart.png") == 0) {
+                GLuint texture_to_render = (heart_count < app->health) ? app->images[i].texture : dead_heart_texture;
+
+                render_image(
+                    texture_to_render,
+                    app->images[i].x,
+                    app->images[i].y,
+                    app->images[i].width,
+                    app->images[i].height,
+                    app->width,
+                    app->height
+                );
+                heart_count++;
+            } else if (strcmp(app->images[i].filename, "assets/images/flashlight_0.png") == 0) {
                 if (!app->flashlight_on) {
                     render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
                 }
@@ -103,7 +131,7 @@ void render_images(App* app) {
                 if (app->flashlight_on) {
                     render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
                 }
-            } else {
+            } else if (strcmp(app->images[i].filename, "assets/images/dead_heart.png") != 0) {
                 render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
             }
         }
@@ -368,7 +396,7 @@ void update_app(App* app) {
     elapsed_time = current_time - app->uptime;
     app->uptime = current_time;
 
-    update_camera(&(app->camera), elapsed_time, &(app->scene));
+    update_camera(&(app->camera), app, elapsed_time, &(app->scene));
     // update_scene(&(app->scene));
 }
 

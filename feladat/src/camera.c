@@ -1,13 +1,14 @@
 #include "camera.h"
+#include "app.h"
 
 #include <GL/gl.h>
 
 #include <math.h>
+#include <string.h>
 
-#include "app.h"
 
 
-void init_camera(Camera* camera) {
+void init_camera(Camera* camera, App* app) {
     camera->position.x = -5.0;
     camera->position.y = 0.0;
     camera->position.z = 20.0;
@@ -20,10 +21,14 @@ void init_camera(Camera* camera) {
 
     camera->is_crouching = false;
     camera->is_sprinting = false;
+
+    if (app->health > 0) {
+        app->health -= 1;
+    }
 }
 
 
-void update_camera(Camera* camera, double time, Scene* scene) {
+void update_camera(Camera* camera, App* app, double time, Scene* scene) {
     double angle = degree_to_radian(camera->rotation.z);
     double side_angle = degree_to_radian(camera->rotation.z + 90.0);
     const float gravity = -9.8f;
@@ -31,45 +36,66 @@ void update_camera(Camera* camera, double time, Scene* scene) {
     double next_x = camera->position.x + cos(angle) * camera->speed.y * time;
     double next_y = camera->position.y + sin(angle) * camera->speed.y * time;
 
-    if (!check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching)) {
+    const char* collided = check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching);
+    if (!collided) {
         camera->position.x = next_x;
+    } else if (strcmp(collided, "lava") == 0) {
+        init_camera(camera, app);
     }
-    if (!check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching)) {
+
+    collided = check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching);
+    if (!collided) {
         camera->position.y = next_y;
+    } else if (strcmp(collided, "lava") == 0) {
+        init_camera(camera, app);
     }
+
 
     next_x = camera->position.x + cos(side_angle) * camera->speed.x * time;
     next_y = camera->position.y + sin(side_angle) * camera->speed.x * time;
 
-    if (!check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching)) {
+    collided = check_collision(next_x, camera->position.y, camera->position.z, scene, camera->is_crouching);
+
+    if (!collided) {
         camera->position.x = next_x;
+    } else if (strcmp(collided, "lava") == 0) {
+        init_camera(camera, app);
     }
-    if (!check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching)) {
+
+    collided = check_collision(camera->position.x, next_y, camera->position.z, scene, camera->is_crouching);
+    if (!collided) {
         camera->position.y = next_y;
+    } else if (strcmp(collided, "lava") == 0) {
+        init_camera(camera, app);
     }
 
     camera->speed.z += gravity * time;
 
     double next_z = camera->position.z + camera->speed.z * time;
 
-    if (!check_collision(camera->position.x, camera->position.y, next_z, scene, camera->is_crouching)) {
+    collided = check_collision(camera->position.x, camera->position.y, next_z, scene, camera->is_crouching);
+    if (!collided) {
         camera->position.z = next_z;
     } else {
-        if (camera->speed.z < 0) {
-            camera->speed.z = 0;
+        if (strcmp(collided, "lava") == 0) {
+            init_camera(camera, app);
+        } else {
+            if (camera->speed.z < 0) {
+                camera->speed.z = 0;
+            }
         }
     }
 }
 
 
-bool check_collision(double x, double y, double z, const Scene* scene, bool crouching) {
+const char* check_collision(double x, double y, double z, const Scene* scene, bool crouching) {
     if (!crouching) {
         for (int i = 0; i < scene->object_count; ++i) {
             BoundingBox box = scene->bounding_boxes[i];
             if (x >= box.min.x && x <= box.max.x &&
                 y >= box.min.y && y <= box.max.y &&
                 z >= box.min.z && z <= box.max.z) {
-                return true;
+                return scene->objects[i].name;
             }
         }
 
@@ -77,7 +103,7 @@ bool check_collision(double x, double y, double z, const Scene* scene, bool crou
         if (x >= box.min.x && x <= box.max.x &&
             y >= box.min.y && y <= box.max.y &&
             z >= box.min.z && z <= box.max.z) {
-            return true;
+            return "floor";
         }
     } else {
         for (int i = 0; i < scene->object_count; ++i) {
@@ -85,7 +111,7 @@ bool check_collision(double x, double y, double z, const Scene* scene, bool crou
             if (x >= box.min.x && x <= box.max.x &&
                 y >= box.min.y && y <= box.max.y &&
                 z >= box.min.z && z <= box.max.z) {
-                return true;
+                return scene->objects[i].name;
             }
         }
 
@@ -93,11 +119,11 @@ bool check_collision(double x, double y, double z, const Scene* scene, bool crou
         if (x >= box.min.x && x <= box.max.x &&
             y >= box.min.y && y <= box.max.y &&
             z >= box.min.z && z <= box.max.z) {
-            return true;
+            return "floor";
         }
     }
 
-    return false;
+    return NULL;
 }
 
 
