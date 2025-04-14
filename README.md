@@ -30,7 +30,7 @@ Elérhető egy zseblámpa is, ami egy spotlight és a kamerából indul. A fény
 
 ## A féléves feladathoz tartozó assetek
 
-https://www.dropbox.com/scl/fi/ulqk5n7brd0t2n8ji57pb/assets.zip?rlkey=qy6uiosg4invilrxra5ji707j&st=04yh4ttb&dl=0
+https://www.dropbox.com/scl/fi/edcf2kf02f0uwl7wdiue4/assets.zip?rlkey=5bikh90xx1agcduylbdzmg8w9&e=1&st=jlt4t627&dl=0
 
 ## A féléves feladathoz szükséges könyvtárak
 
