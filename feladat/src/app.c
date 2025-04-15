@@ -22,7 +22,7 @@ void init_app(App* app) {
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
 
-    app->cursor_mode = false;
+    app->menu_open = false;
 
     app->width = DM.w;
     app->height = DM.h;
@@ -79,6 +79,8 @@ void init_app(App* app) {
     add_image(app, "assets/images/flashlight_0.png", app->width - 90, app->height - 90, 80, 80);
     add_image(app, "assets/images/flashlight_1.png", app->width - 90, app->height - 90, 80, 80);
     add_image(app, "assets/images/key_f.png", app->width - 42, app->height - 37, 24, 24);
+    add_image(app, "assets/images/menu.png", app->width/2 - 250, app->height/2 - 350/2, 500, 350);
+    add_image(app, "assets/images/close.png", app->width/2 + 225, app->height/2 - 350/2 + 5, 20, 20);
 }
 
 
@@ -129,6 +131,14 @@ void render_images(App* app) {
                 }
             } else if (strcmp(app->images[i].filename, "assets/images/flashlight_1.png") == 0) {
                 if (app->flashlight_on) {
+                    render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+                }
+            } else if (strcmp(app->images[i].filename, "assets/images/menu.png") == 0) {
+                if (app->menu_open) {
+                    render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
+                }
+            } else if (strcmp(app->images[i].filename, "assets/images/close.png") == 0) {
+                if (app->menu_open) {
                     render_image(app->images[i].texture, app->images[i].x, app->images[i].y, app->images[i].width, app->images[i].height, app->width, app->height);
                 }
             } else if (strcmp(app->images[i].filename, "assets/images/dead_heart.png") != 0) {
@@ -182,7 +192,7 @@ SDL_bool is_key_pressed(SDL_Scancode key) {
 
 
 void disable_camera_movement_if_cursor_active(App* app) {
-    if (app->cursor_mode) {
+    if (app->menu_open) {
         set_camera_speed(&(app->camera), 0);
         set_camera_side_speed(&(app->camera), 0);
     }
@@ -197,12 +207,9 @@ void handle_app_events(App* app) {
         switch (event.type) {
         case SDL_KEYDOWN:
             switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_ESCAPE:
-                app->is_running = false;
-                break;
             case SDL_SCANCODE_W:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                     set_camera_speed(&(app->camera), 3);
                 } else {
@@ -211,7 +218,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_S:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                     set_camera_speed(&(app->camera), -3);
                 } else {
@@ -220,7 +227,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_A:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                     set_camera_side_speed(&(app->camera), 3);
                 } else {
@@ -229,7 +236,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_D:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                     set_camera_side_speed(&(app->camera), -3);
                 } else {
@@ -238,7 +245,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_C:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (app->camera.is_crouching) {
                     app->camera.position.z += 0.8;
                 } else {
@@ -248,7 +255,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_LSHIFT:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_W)) {
                     set_camera_speed(&(app->camera), 3);
                 }
@@ -264,16 +271,32 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_SPACE:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (check_collision(app->camera.position.x, app->camera.position.y, app->camera.position.z - 0.1, &(app->scene), app->camera.is_crouching)) {
                     app->camera.speed.z = 4.0;
                     play_sound("assets/sounds/jump.mp3", 0);
                 }
                 break;
-            case SDL_SCANCODE_M:
-                app->cursor_mode = !app->cursor_mode;
+            case SDL_SCANCODE_E:
+                disable_camera_movement_if_cursor_active(app);
+                if (app->menu_open) continue;
+                app->scene.flashlight_intensity += 0.1f;
+                if (app->scene.flashlight_intensity > 1.0f) {
+                    app->scene.flashlight_intensity = 1.0f;
+                }
+                break;
+            case SDL_SCANCODE_Q:
+                disable_camera_movement_if_cursor_active(app);
+                if (app->menu_open) continue;
+                app->scene.flashlight_intensity -= 0.1f;
+                if (app->scene.flashlight_intensity < 0.0f) {
+                    app->scene.flashlight_intensity = 0.0f;
+                }
+                break;
+            case SDL_SCANCODE_ESCAPE:
+                app->menu_open = !app->menu_open;
             
-                if (app->cursor_mode) {
+                if (app->menu_open) {
                     SDL_SetRelativeMouseMode(SDL_FALSE);
                     SDL_ShowCursor(SDL_ENABLE);
                 } else {
@@ -290,7 +313,7 @@ void handle_app_events(App* app) {
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_S:
                     disable_camera_movement_if_cursor_active(app);
-                    if (app->cursor_mode) continue;
+                    if (app->menu_open) continue;
                     if (is_key_pressed(SDL_SCANCODE_W)) {
                         if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                             set_camera_side_speed(&(app->camera), 3);
@@ -310,7 +333,7 @@ void handle_app_events(App* app) {
                 case SDL_SCANCODE_A:
                 case SDL_SCANCODE_D:
                     disable_camera_movement_if_cursor_active(app);
-                    if (app->cursor_mode) continue;
+                    if (app->menu_open) continue;
                     if (is_key_pressed(SDL_SCANCODE_A)) {
                         if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
                             set_camera_side_speed(&(app->camera), 3);
@@ -329,7 +352,7 @@ void handle_app_events(App* app) {
                     break;
             case SDL_SCANCODE_F:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 app->flashlight_on = !app->flashlight_on;
                 if (app->flashlight_on) {
                     glEnable(GL_LIGHT0);
@@ -339,7 +362,7 @@ void handle_app_events(App* app) {
                 break;
             case SDL_SCANCODE_LSHIFT:
                 disable_camera_movement_if_cursor_active(app);
-                if (app->cursor_mode) continue;
+                if (app->menu_open) continue;
                 if (is_key_pressed(SDL_SCANCODE_W)) {
                     set_camera_speed(&(app->camera), 1);
                 }
@@ -359,22 +382,62 @@ void handle_app_events(App* app) {
             break;
         case SDL_MOUSEMOTION:
             disable_camera_movement_if_cursor_active(app);
-            if (app->cursor_mode) continue;
+            if (app->menu_open) continue;
             SDL_GetRelativeMouseState(&rel_x, &rel_y);
             rotate_camera(&(app->camera), -rel_x, -rel_y);
             break;
-        case SDL_MOUSEWHEEL:
-            disable_camera_movement_if_cursor_active(app);
-            if (app->cursor_mode) continue;
-            if (event.wheel.y > 0) {
-                app->scene.flashlight_intensity += 0.1f;
-                if (app->scene.flashlight_intensity > 1.0f) {
-                    app->scene.flashlight_intensity = 1.0f;
-                }
-            } else if (event.wheel.y < 0) {
-                app->scene.flashlight_intensity -= 0.1f;
-                if (app->scene.flashlight_intensity < 0.0f) {
-                    app->scene.flashlight_intensity = 0.0f;
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                int mouse_x = event.button.x;
+                int mouse_y = event.button.y;
+        
+                if (app->menu_open) {
+                    int x, y, width, height;
+                    x = app->width/2 + 225;
+                    y = app->height/2 - 350/2 + 5;
+                    width = height = 20;
+
+                    if (mouse_x >= x && 
+                        mouse_x <= x + width && 
+                        mouse_y >= height && 
+                        mouse_y <= y + height) {
+                        app->menu_open = !app->menu_open;
+                
+                        if (app->menu_open) {
+                            SDL_SetRelativeMouseMode(SDL_FALSE);
+                            SDL_ShowCursor(SDL_ENABLE);
+                        } else {
+                            SDL_SetRelativeMouseMode(SDL_TRUE);
+                            SDL_ShowCursor(SDL_DISABLE);
+                        }
+                    }
+
+
+
+                    x = app->width/2 - 250 + 15 + 251;
+                    y = app->height/2 - 350/2 + 316;
+                    width = 236;
+                    height = 26;
+
+                    if (mouse_x >= x && 
+                        mouse_x <= x + width && 
+                        mouse_y >= height && 
+                        mouse_y <= y + height) {      
+                            
+                        app->is_running = false;
+                    }
+
+                    x = app->width/2 - 250 + 15;
+                    y = app->height/2 - 350/2 + 316;
+                    width = 236;
+                    height = 26;
+
+                    if (mouse_x >= x && 
+                        mouse_x <= x + width && 
+                        mouse_y >= height && 
+                        mouse_y <= y + height) {                
+                        init_camera(&(app->camera), app);
+                    }
                 }
             }
             break;

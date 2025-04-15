@@ -34,7 +34,7 @@ typedef struct App {
     Scene scene;
     bool flashlight_on;
     Image images[100];
-    bool cursor_mode;
+    bool menu_open;
     int health;
 } App;
 
