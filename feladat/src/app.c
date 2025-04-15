@@ -386,7 +386,7 @@ void handle_app_events(App* app) {
             SDL_GetRelativeMouseState(&rel_x, &rel_y);
             rotate_camera(&(app->camera), -rel_x, -rel_y);
             break;
-        case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONDOWN:
             if (event.button.button == SDL_BUTTON_LEFT) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
@@ -399,7 +399,7 @@ void handle_app_events(App* app) {
 
                     if (mouse_x >= x && 
                         mouse_x <= x + width && 
-                        mouse_y >= height && 
+                        mouse_y >= y && 
                         mouse_y <= y + height) {
                         app->menu_open = !app->menu_open;
                 
@@ -412,29 +412,27 @@ void handle_app_events(App* app) {
                         }
                     }
 
-
-
-                    x = app->width/2 - 250 + 15 + 251;
+                    x = app->width/2 - 250 + 10 + 251;
                     y = app->height/2 - 350/2 + 316;
-                    width = 236;
+                    width = 235;
                     height = 26;
 
                     if (mouse_x >= x && 
                         mouse_x <= x + width && 
-                        mouse_y >= height && 
+                        mouse_y >= y && 
                         mouse_y <= y + height) {      
                             
                         app->is_running = false;
                     }
 
-                    x = app->width/2 - 250 + 15;
+                    x = app->width/2 - 250 + 10;
                     y = app->height/2 - 350/2 + 316;
-                    width = 236;
+                    width = 235;
                     height = 26;
 
                     if (mouse_x >= x && 
                         mouse_x <= x + width && 
-                        mouse_y >= height && 
+                        mouse_y >= y && 
                         mouse_y <= y + height) {                
                         init_camera(&(app->camera), app);
                     }
