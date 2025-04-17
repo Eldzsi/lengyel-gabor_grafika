@@ -3,7 +3,7 @@
 
 
 #include "scene.h"
-#include "camera.h"
+#include "player.h"
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
@@ -13,7 +13,7 @@
 
 
 typedef struct Scene Scene;
-typedef struct Camera Camera;
+typedef struct Player Player;
 
 typedef struct Image {
     GLuint texture; 
@@ -26,17 +26,15 @@ typedef struct Image {
 
 typedef struct App {
     SDL_Window* window;
+    SDL_GLContext gl_context;
+    Scene scene;
+    Image images[100];
+    Player player;
     int width;
     int height;
-    SDL_GLContext gl_context;
-    bool is_running;
     double uptime;
-    Camera camera;
-    Scene scene;
-    bool flashlight_on;
-    Image images[100];
+    bool is_running;
     bool menu_open;
-    int health;
 } App;
 
 

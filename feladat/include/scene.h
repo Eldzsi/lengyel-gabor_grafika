@@ -3,7 +3,7 @@
 
 
 #include "bounding_box.h"
-#include "camera.h"
+#include "player.h"
 #include "texture.h"
 
 #include <obj/model.h>
@@ -11,8 +11,9 @@
 
 #define MAX_OBJECTS 100
 
+typedef struct App App;
 
-typedef struct Camera Camera;
+typedef struct Player Player;
 
 typedef struct Object {
     Model model;
@@ -32,17 +33,16 @@ typedef struct Scene {
     Object objects[MAX_OBJECTS];
     BoundingBox bounding_boxes[MAX_OBJECTS];
     BoundingBox crouch_bounding_boxes[MAX_OBJECTS];
-    int object_count;
     Material material;
-    float flashlight_intensity;
+    int object_count;
 } Scene;
 
 
 void load_object_data_from_csv(Scene* scene, const char* filename);
 
-void init_scene(Scene* scene);
+void init_scene(Scene* scene, App* app);
 
-void set_lighting(const Camera* camera, float intensity);
+void set_lighting(const Player* player, float brightness);
 
 void set_material(const Material* material);
 
@@ -50,7 +50,7 @@ void set_material(const Material* material);
 
 void draw_object(const Object* obj);
 
-void render_scene(const Scene* scene, const Camera* camera);
+void render_scene(const Scene* scene, const Player* player);
 
 
 #endif

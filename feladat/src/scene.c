@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "app.h"
 #include "bounding_box.h"
 
 #include <obj/load.h>
@@ -10,7 +11,7 @@
 #include <math.h>
 
 
-void init_scene(Scene* scene) {
+void init_scene(Scene* scene, App* app) {
     load_object_data_from_csv(scene, "objects.csv");
 
     scene->material.ambient.red = 0.1;
@@ -27,7 +28,7 @@ void init_scene(Scene* scene) {
 
     scene->material.shininess = 0.0;
 
-    scene->flashlight_intensity = 0.5;
+    app->player.flashlight_brightness = 0.5;
 
     for (int i = 0; i < scene->object_count; i++) {
         BoundingBox box = calculate_bounding_box(&scene->objects[i], 1.0);
@@ -72,28 +73,28 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
 }
 
 
-void set_lighting(const Camera* camera, float intensity) {
-    float ambient_light0[] = {0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f};
-    float diffuse_light0[] = {1.0f * intensity, 1.0f * intensity, 1.0f * intensity, 1.0f};
-    float specular_light0[] = {0.0f * intensity, 0.0f * intensity, 0.0f * intensity, 1.0f};
+void set_lighting(const Player* player, float brightness) {
+    float ambient_light0[] = {0.0f * brightness, 0.0f * brightness, 0.0f * brightness, 1.0f};
+    float diffuse_light0[] = {1.0f * brightness, 1.0f * brightness, 1.0f * brightness, 1.0f};
+    float specular_light0[] = {0.0f * brightness, 0.0f * brightness, 0.0f * brightness, 1.0f};
 
     for (int i = 0; i < 3; ++i) {
-        ambient_light0[i] *= intensity;
-        diffuse_light0[i] *= intensity;
-        specular_light0[i] *= intensity;
+        ambient_light0[i] *= brightness;
+        diffuse_light0[i] *= brightness;
+        specular_light0[i] *= brightness;
     }
 
     float position0[] = {
-        camera->position.x,
-        camera->position.y,
-        camera->position.z,
+        player->position.x,
+        player->position.y,
+        player->position.z,
         1.0f
     };
 
     float direction0[] = {
-        cos(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
-        sin(degree_to_radian(camera->rotation.z)) * cos(degree_to_radian(camera->rotation.x)),
-        sin(degree_to_radian(camera->rotation.x))
+        cos(degree_to_radian(player->rotation.z)) * cos(degree_to_radian(player->rotation.x)),
+        sin(degree_to_radian(player->rotation.z)) * cos(degree_to_radian(player->rotation.x)),
+        sin(degree_to_radian(player->rotation.x))
     };
 
     float cutoff0 = 60.0f;
@@ -165,9 +166,9 @@ void draw_object(const Object* obj) {
 }
 
 
-void render_scene(const Scene* scene, const Camera* camera) {
+void render_scene(const Scene* scene, const Player* player) {
     set_material(&(scene->material));
-    set_lighting(camera, scene->flashlight_intensity);
+    set_lighting(player, player->flashlight_brightness);
 
     for (int i = 0; i < scene->object_count; i++) {
         draw_object(&scene->objects[i]);
