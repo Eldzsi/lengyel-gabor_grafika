@@ -1,10 +1,10 @@
 #include "sound.h"
 
 #include "stdio.h"
-#include <SDL2/SDL_mixer.h>
+// #include <SDL2/SDL_mixer.h>
 
 
-void init_mixer() {
+/* void init_mixer() {
     if (Mix_Init(MIX_INIT_MP3) == 0) {
         printf("[ERROR] SDL_mixer initialization error: %s\n", Mix_GetError());
         return;
@@ -36,4 +36,4 @@ void play_sound(const char* file_path, int loop) {
 void destroy_mixer() {
     Mix_CloseAudio();
     Mix_Quit();
-}
+} */

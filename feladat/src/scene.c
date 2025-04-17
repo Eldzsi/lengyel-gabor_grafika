@@ -58,7 +58,7 @@ void init_scene(Scene* scene) {
     scene->floor_crouch_bounding_box.min.z = -0.1f;
     scene->floor_crouch_bounding_box.max.z = 0.3f;
 
-    init_fog();
+    // init_fog();
 }
 
 

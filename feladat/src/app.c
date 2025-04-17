@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "app.h"
-#include "sound.h"
+// #include "sound.h"
 #include <string.h>
 
 #include <SDL2/SDL_image.h>
@@ -55,8 +55,8 @@ void init_app(App* app) {
     init_camera(&(app->camera), app);
     init_scene(&(app->scene));
 
-    init_mixer();
-    play_sound("assets/sounds/lava.mp3", -1);
+    // init_mixer();
+    // play_sound("assets/sounds/lava.mp3", -1);
 
     app->is_running = true;
 
@@ -274,7 +274,7 @@ void handle_app_events(App* app) {
                 if (app->menu_open) continue;
                 if (check_collision(app->camera.position.x, app->camera.position.y, app->camera.position.z - 0.1, &(app->scene), app->camera.is_crouching)) {
                     app->camera.speed.z = 4.0;
-                    play_sound("assets/sounds/jump.mp3", 0);
+                    // play_sound("assets/sounds/jump.mp3", 0);
                 }
                 break;
             case SDL_SCANCODE_E:
@@ -497,6 +497,6 @@ void destroy_app(App* app) {
         }
     }
 
-    destroy_mixer();
+    // destroy_mixer();
     SDL_Quit();
 }
