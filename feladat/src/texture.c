@@ -7,24 +7,22 @@
 
 
 GLuint load_texture(char* filename) {
-    SDL_Surface* surface;
-    GLuint texture_name;
-
-    surface = IMG_Load(filename);
+    SDL_Surface* surface = IMG_Load(filename);
     if (surface == NULL) {
         printf("\n[ERROR] Failed to load image: %s", IMG_GetError());
         return 0;
     }
 
+    GLuint texture_name;
     glGenTextures(1, &texture_name);
 
     glBindTexture(GL_TEXTURE_2D, texture_name);
+
     GLenum format = surface->format->BytesPerPixel == 4 ? GL_RGBA : GL_RGB;
     glTexImage2D(GL_TEXTURE_2D, 0, format, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -38,16 +36,8 @@ void render_image(GLuint texture, float x, float y, float width, float height, i
     glLoadIdentity();
     glOrtho(0, screen_width, screen_height, 0, -1, 1);
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-
     glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT | GL_TEXTURE_BIT);
-
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    set_rendering_state();
 
     glBindTexture(GL_TEXTURE_2D, texture);
         
@@ -60,7 +50,12 @@ void render_image(GLuint texture, float x, float y, float width, float height, i
 
     glPopAttrib();
     glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
+}
+
+
+void set_rendering_state() {
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

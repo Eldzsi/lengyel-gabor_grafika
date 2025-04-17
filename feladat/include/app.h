@@ -1,7 +1,6 @@
 #ifndef APP_H
 #define APP_H
 
-#include <stdio.h>
 
 #include "scene.h"
 #include "camera.h"
@@ -9,7 +8,9 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 
+#include <stdio.h>
 #include <stdbool.h>
+
 
 typedef struct Scene Scene;
 typedef struct Camera Camera;
@@ -38,6 +39,7 @@ typedef struct App {
     int health;
 } App;
 
+
 void init_app(App* app);
 
 void init_opengl();
@@ -57,5 +59,6 @@ SDL_bool is_key_pressed(SDL_Scancode key);
 void add_image(App* app, char* filename, float x, float y, float width, float height);
 
 void render_images(App* app);
+
 
 #endif

@@ -1,24 +1,22 @@
-#include <stdio.h>
-
 #include "app.h"
-// #include "sound.h"
-#include <string.h>
+#include <stdio.h>
 
 #include <SDL2/SDL_image.h>
 
+#include <string.h>
+
 
 void init_app(App* app) {
-    int error_code;
-    int inited_loaders;
-
-    app->is_running = false;
-
-    error_code = SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
+    int error_code = SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
     if (error_code != 0) {
         printf("[ERROR] SDL initialization error: %s\n", SDL_GetError());
         return;
     }
-    
+
+    int inited_loaders;
+
+    app->is_running = false;
+
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
 
@@ -52,7 +50,7 @@ void init_app(App* app) {
     init_opengl();
     reshape(app->width, app->height);
 
-    init_camera(&(app->camera), app);
+    init_camera(&(app->camera));
     init_scene(&(app->scene));
 
     // init_mixer();
@@ -70,17 +68,23 @@ void init_app(App* app) {
         app->images[i].texture = 0;
     }
 
-    add_image(app, "assets/images/heart.png", 10, 10, 64, 64);
-    add_image(app, "assets/images/heart.png", 84, 10, 64, 64);
-    add_image(app, "assets/images/heart.png", 158, 10, 64, 64);
-    add_image(app, "assets/images/dead_heart.png", 10, 10, 64, 64);
-    add_image(app, "assets/images/dead_heart.png", 84, 10, 64, 64);
-    add_image(app, "assets/images/dead_heart.png", 158, 10, 64, 64);
-    add_image(app, "assets/images/flashlight_0.png", app->width - 90, app->height - 90, 80, 80);
-    add_image(app, "assets/images/flashlight_1.png", app->width - 90, app->height - 90, 80, 80);
-    add_image(app, "assets/images/key_f.png", app->width - 42, app->height - 37, 24, 24);
-    add_image(app, "assets/images/menu.png", app->width/2 - 250, app->height/2 - 350/2, 500, 350);
-    add_image(app, "assets/images/close.png", app->width/2 + 225, app->height/2 - 350/2 + 5, 20, 20);
+    char* image_paths[] = {
+        "assets/images/heart.png", "assets/images/heart.png", "assets/images/heart.png", 
+        "assets/images/dead_heart.png", "assets/images/dead_heart.png", "assets/images/dead_heart.png", 
+        "assets/images/flashlight_0.png", "assets/images/flashlight_1.png", 
+        "assets/images/key_f.png", "assets/images/menu.png", "assets/images/close.png"
+    };
+    const float image_positions[][4] = {
+        {10, 10, 64, 64}, {84, 10, 64, 64}, {158, 10, 64, 64}, 
+        {10, 10, 64, 64}, {84, 10, 64, 64}, {158, 10, 64, 64}, 
+        {app->width - 90, app->height - 90, 80, 80}, {app->width - 90, app->height - 90, 80, 80}, 
+        {app->width - 42, app->height - 37, 24, 24}, {app->width / 2 - 250, app->height / 2 - 350 / 2, 500, 350}, 
+        {app->width / 2 + 225, app->height / 2 - 350 / 2 + 5, 20, 20}
+    };
+
+    for (int i = 0; i < 11; i++) {
+        add_image(app, image_paths[i], image_positions[i][0], image_positions[i][1], image_positions[i][2], image_positions[i][3]);
+    }
 }
 
 
@@ -434,7 +438,7 @@ void handle_app_events(App* app) {
                         mouse_x <= x + width && 
                         mouse_y >= y && 
                         mouse_y <= y + height) {                
-                        init_camera(&(app->camera), app);
+                        init_camera(&(app->camera));
                     }
                 }
             }

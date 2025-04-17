@@ -4,6 +4,7 @@
 
 #include "math.h"
 
+
 BoundingBox calculate_bounding_box(const Object* obj, float z_offset) {
     BoundingBox box;
 
@@ -103,7 +104,6 @@ BoundingBox calculate_bounding_box(const Object* obj, float z_offset) {
 
 void draw_bounding_boxes(const Scene* scene) {
     glDisable(GL_LIGHTING);
-
     glColor3f(1.0f, 1.0f, 0.0f);
 
     for (int i = 0; i < scene->object_count; i++) {
@@ -126,24 +126,6 @@ void draw_bounding_boxes(const Scene* scene) {
             glVertex3f(box.min.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.max.y, box.max.z);
         glEnd();
     }
-
-    BoundingBox box = scene->floor_bounding_box;
-    glBegin(GL_LINES);
-        glVertex3f(box.min.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.min.y, box.min.z);
-        glVertex3f(box.max.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.max.y, box.min.z);
-        glVertex3f(box.max.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.max.y, box.min.z);
-        glVertex3f(box.min.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.min.y, box.min.z);
-
-        glVertex3f(box.min.x, box.min.y, box.max.z); glVertex3f(box.max.x, box.min.y, box.max.z);
-        glVertex3f(box.max.x, box.min.y, box.max.z); glVertex3f(box.max.x, box.max.y, box.max.z);
-        glVertex3f(box.max.x, box.max.y, box.max.z); glVertex3f(box.min.x, box.max.y, box.max.z);
-        glVertex3f(box.min.x, box.max.y, box.max.z); glVertex3f(box.min.x, box.min.y, box.max.z);
-
-        glVertex3f(box.min.x, box.min.y, box.min.z); glVertex3f(box.min.x, box.min.y, box.max.z);
-        glVertex3f(box.max.x, box.min.y, box.min.z); glVertex3f(box.max.x, box.min.y, box.max.z);
-        glVertex3f(box.max.x, box.max.y, box.min.z); glVertex3f(box.max.x, box.max.y, box.max.z);
-        glVertex3f(box.min.x, box.max.y, box.min.z); glVertex3f(box.min.x, box.max.y, box.max.z);
-    glEnd();
 
     glEnable(GL_LIGHTING);
 }
