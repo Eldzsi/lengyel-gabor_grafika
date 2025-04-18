@@ -195,161 +195,26 @@ SDL_bool is_key_pressed(SDL_Scancode key) {
 }
 
 
-void disable_camera_movement_if_cursor_active(App* app) {
-    if (app->menu_open) {
-        set_camera_speed(&(app->player), 0);
-        set_camera_side_speed(&(app->player), 0);
-    }
-}
-
-
 void handle_app_events(App* app) {
     SDL_Event event;
     static int rel_x, rel_y;
 
     while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_W:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_speed(&(app->player), 3);
-                } else {
-                    set_camera_speed(&(app->player), 1);
-                }
-                break;
-            case SDL_SCANCODE_S:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_speed(&(app->player), -3);
-                } else {
-                    set_camera_speed(&(app->player), -1);
-                }
-                break;
-            case SDL_SCANCODE_A:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_side_speed(&(app->player), 3);
-                } else {
-                    set_camera_side_speed(&(app->player), 1);
-                }
-                break;
-            case SDL_SCANCODE_D:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                    set_camera_side_speed(&(app->player), -3);
-                } else {
-                    set_camera_side_speed(&(app->player), -1);
-                }
-                break;
-            case SDL_SCANCODE_C:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                set_crouch_enabled(&(app->player), !is_crouch_enabled(&(app->player)));
-                break;
-            case SDL_SCANCODE_LSHIFT:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                set_sprint_enabled(&(app->player), true);
-                break;
-            case SDL_SCANCODE_SPACE:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                jump(&(app->player), app);
-                break;
-            case SDL_SCANCODE_F:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                use_flashlight(&(app->player));
-                break;
-            case SDL_SCANCODE_E:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                change_flashlight_brightness(&(app->player), 0.1);
-                break;
-            case SDL_SCANCODE_Q:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                change_flashlight_brightness(&(app->player), -0.1);
-                break;
-            case SDL_SCANCODE_ESCAPE:
-                app->menu_open = !app->menu_open;
-            
-                if (app->menu_open) {
-                    SDL_SetRelativeMouseMode(SDL_FALSE);
-                    SDL_ShowCursor(SDL_ENABLE);
-                } else {
-                    SDL_SetRelativeMouseMode(SDL_TRUE);
-                    SDL_ShowCursor(SDL_DISABLE);
-                }
-                break;
-            default:
-                break;
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+            app->menu_open = !app->menu_open;
+
+            if (app->menu_open) {
+                SDL_SetRelativeMouseMode(SDL_FALSE);
+                SDL_ShowCursor(SDL_ENABLE);
+            } else {
+                SDL_SetRelativeMouseMode(SDL_TRUE);
+                SDL_ShowCursor(SDL_DISABLE);
             }
-            break;
-        case SDL_KEYUP:
-            switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_W:
-            case SDL_SCANCODE_S:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_W)) {
-                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                        set_camera_side_speed(&(app->player), 3);
-                    } else {
-                        set_camera_side_speed(&(app->player), 1);
-                    }
-                } else if (is_key_pressed(SDL_SCANCODE_S)) {
-                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                        set_camera_side_speed(&(app->player), -3);
-                    } else {
-                        set_camera_side_speed(&(app->player), -1);
-                    }
-                } else {
-                    set_camera_speed(&(app->player), 0);
-                }
-                break;
-            case SDL_SCANCODE_A:
-            case SDL_SCANCODE_D:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                if (is_key_pressed(SDL_SCANCODE_A)) {
-                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                        set_camera_side_speed(&(app->player), 3);
-                    } else {
-                        set_camera_side_speed(&(app->player), 1);
-                    }
-                } else if (is_key_pressed(SDL_SCANCODE_D)) {
-                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
-                        set_camera_side_speed(&(app->player), -3);
-                    } else {
-                        set_camera_side_speed(&(app->player), -1);
-                    }
-                } else {
-                    set_camera_side_speed(&(app->player), 0);
-                }
-                break;
-            case SDL_SCANCODE_LSHIFT:
-                disable_camera_movement_if_cursor_active(app);
-                if (app->menu_open) continue;
-                set_sprint_enabled(&(app->player), false);
-                break;
-            default:
-                break;
-            }
-            break;
-        case SDL_MOUSEMOTION:
-            disable_camera_movement_if_cursor_active(app);
-            if (app->menu_open) continue;
-            SDL_GetRelativeMouseState(&rel_x, &rel_y);
-            rotate_camera(&(app->player), -rel_x, -rel_y);
-            break;
-            case SDL_MOUSEBUTTONDOWN:
+            continue;
+        }
+
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
@@ -401,9 +266,119 @@ void handle_app_events(App* app) {
                     }
                 }
             }
-            break;
-        case SDL_QUIT:
+            continue;
+        }
+
+        if (event.type == SDL_QUIT) {
             app->is_running = false;
+            continue;
+        }
+
+        if (app->menu_open) {
+            continue;
+        }
+
+        switch (event.type) {
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.scancode) {
+            case SDL_SCANCODE_W:
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_speed(&(app->player), 3);
+                } else {
+                    set_camera_speed(&(app->player), 1);
+                }
+                break;
+            case SDL_SCANCODE_S:
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_speed(&(app->player), -3);
+                } else {
+                    set_camera_speed(&(app->player), -1);
+                }
+                break;
+            case SDL_SCANCODE_A:
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_side_speed(&(app->player), 3);
+                } else {
+                    set_camera_side_speed(&(app->player), 1);
+                }
+                break;
+            case SDL_SCANCODE_D:
+                if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                    set_camera_side_speed(&(app->player), -3);
+                } else {
+                    set_camera_side_speed(&(app->player), -1);
+                }
+                break;
+            case SDL_SCANCODE_C:
+                set_crouch_enabled(&(app->player), !is_crouch_enabled(&(app->player)));
+                break;
+            case SDL_SCANCODE_LSHIFT:
+                set_sprint_enabled(&(app->player), true);
+                break;
+            case SDL_SCANCODE_SPACE:
+                jump(&(app->player), app);
+                break;
+            case SDL_SCANCODE_F:
+                use_flashlight(&(app->player));
+                break;
+            case SDL_SCANCODE_E:
+                change_flashlight_brightness(&(app->player), 0.1);
+                break;
+            case SDL_SCANCODE_Q:
+                change_flashlight_brightness(&(app->player), -0.1);
+                break;
+            default:
+                break;
+            }
+            break;
+        case SDL_KEYUP:
+            switch (event.key.keysym.scancode) {
+            case SDL_SCANCODE_W:
+            case SDL_SCANCODE_S:
+                if (is_key_pressed(SDL_SCANCODE_W)) {
+                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                        set_camera_side_speed(&(app->player), 3);
+                    } else {
+                        set_camera_side_speed(&(app->player), 1);
+                    }
+                } else if (is_key_pressed(SDL_SCANCODE_S)) {
+                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                        set_camera_side_speed(&(app->player), -3);
+                    } else {
+                        set_camera_side_speed(&(app->player), -1);
+                    }
+                } else {
+                    set_camera_speed(&(app->player), 0);
+                }
+                break;
+            case SDL_SCANCODE_A:
+            case SDL_SCANCODE_D:
+                if (is_key_pressed(SDL_SCANCODE_A)) {
+                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                        set_camera_side_speed(&(app->player), 3);
+                    } else {
+                        set_camera_side_speed(&(app->player), 1);
+                    }
+                } else if (is_key_pressed(SDL_SCANCODE_D)) {
+                    if (is_key_pressed(SDL_SCANCODE_LSHIFT)) {
+                        set_camera_side_speed(&(app->player), -3);
+                    } else {
+                        set_camera_side_speed(&(app->player), -1);
+                    }
+                } else {
+                    set_camera_side_speed(&(app->player), 0);
+                }
+                break;
+            case SDL_SCANCODE_LSHIFT:
+                set_sprint_enabled(&(app->player), false);
+                break;
+            default:
+                break;
+            }
+            break;
+        case SDL_MOUSEMOTION:
+            SDL_GetRelativeMouseState(&rel_x, &rel_y);
+            rotate_camera(&(app->player), -rel_x, -rel_y);
             break;
         default:
             break;
