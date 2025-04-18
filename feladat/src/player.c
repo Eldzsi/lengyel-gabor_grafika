@@ -1,5 +1,6 @@
 #include "player.h"
 #include "app.h"
+#include "input.h"
 
 #include <GL/gl.h>
 

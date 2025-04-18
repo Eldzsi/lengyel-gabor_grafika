@@ -44,15 +44,11 @@ void init_opengl();
 
 void reshape(int width, int height);
 
-void handle_app_events(App* app);
-
 void update_app(App* app);
 
 void render_app(App* app);
 
 void destroy_app(App* app);
-
-SDL_bool is_key_pressed(SDL_Scancode key);
 
 void add_image(App* app, char* filename, float x, float y, float width, float height);
 
