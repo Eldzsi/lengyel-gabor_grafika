@@ -5,11 +5,14 @@
 #include "bounding_box.h"
 #include "player.h"
 #include "texture.h"
+#include "smoke.h"
 
 #include <obj/model.h>
 
 
 #define MAX_OBJECTS 100
+#define MAX_SMOKES 10
+
 
 typedef struct App App;
 
@@ -30,15 +33,19 @@ typedef struct Object {
 } Object;
 
 typedef struct Scene {
+    Material material;
     Object objects[MAX_OBJECTS];
+    Smoke smokes[MAX_SMOKES];
     BoundingBox bounding_boxes[MAX_OBJECTS];
     BoundingBox crouch_bounding_boxes[MAX_OBJECTS];
-    Material material;
     int object_count;
+    int smoke_count;
 } Scene;
 
 
 void load_object_data_from_csv(Scene* scene, const char* filename);
+
+void load_smoke_data_from_csv(Scene* scene, const char* filename);
 
 void init_scene(Scene* scene, App* app);
 
@@ -46,7 +53,7 @@ void set_lighting(const Player* player, float brightness);
 
 void set_material(const Material* material);
 
-// void update_scene(Scene* scene);
+void update_scene(Scene* scene, Player* player, double elapsed_time);
 
 void draw_object(const Object* obj);
 

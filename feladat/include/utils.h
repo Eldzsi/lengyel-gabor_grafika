@@ -31,5 +31,7 @@ void rotate_point(float* x, float* y, float* z, float rx, float ry, float rz);
 
 void get_model_size(const Model* model, float* width, float* depth, float* height, vec3* min, vec3* max);
 
+double generate_random_number(double min, double max);
+
 
 #endif

@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "app.h"
 #include "bounding_box.h"
+#include "smoke.h"
 
 #include <obj/load.h>
 #include <obj/draw.h>
@@ -13,6 +14,8 @@
 
 void init_scene(Scene* scene, App* app) {
     load_object_data_from_csv(scene, "objects.csv");
+
+    load_smoke_data_from_csv(scene, "particles.csv");
 
     scene->material.ambient.red = 0.1;
     scene->material.ambient.green = 0.1;
@@ -37,6 +40,34 @@ void init_scene(Scene* scene, App* app) {
         BoundingBox c_box = calculate_bounding_box(&scene->objects[i], 0.2);
         scene->crouch_bounding_boxes[i] = c_box;
     }
+}
+
+
+void load_smoke_data_from_csv(Scene* scene, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("\n[Error] Unable to open %s", filename);
+        return;
+    }
+
+    char line[256];
+    fgets(line, sizeof(line), file);
+
+    scene->smoke_count = 0;
+
+    while (fgets(line, sizeof(line), file) && scene->smoke_count < MAX_SMOKES) {
+        float x, y, z;
+        int particle_count;
+        float spread_x, spread_y, spread_z;
+
+        if (sscanf(line, "%f,%f,%f,%f,%f,%f,%d", &x, &y, &z, &spread_x, &spread_y, &spread_z, &particle_count) == 7) {
+            vec3 position = {x, y, z};
+            init_smoke(&scene->smokes[scene->smoke_count], position, particle_count, spread_x, spread_y, spread_z);
+            scene->smoke_count++;
+        } 
+    }
+
+    fclose(file);
 }
 
 
@@ -149,8 +180,13 @@ void set_material(const Material* material) {
 }
 
 
-// void update_scene(Scene* scene) {
-//}
+void update_scene(Scene* scene, Player* player, double elapsed_time) {
+    scene->smokes[0].position = player->position;
+
+    for (int i = 0; i < scene->smoke_count; i++) {
+        update_smoke(&scene->smokes[i], elapsed_time);
+    }
+}
 
 
 void draw_object(const Object* obj) {
@@ -169,6 +205,10 @@ void draw_object(const Object* obj) {
 void render_scene(const Scene* scene, const Player* player) {
     set_material(&(scene->material));
     set_lighting(player, player->flashlight_brightness);
+
+    for (int i = 0; i < scene->smoke_count; ++i) {
+        render_smoke(&(scene->smokes[i]));
+    }
 
     for (int i = 0; i < scene->object_count; i++) {
         draw_object(&scene->objects[i]);

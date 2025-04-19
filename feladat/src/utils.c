@@ -2,8 +2,10 @@
 
 #include <obj/model.h>
 
-#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <time.h>
 
 
 double degree_to_radian(double degree) {
@@ -64,4 +66,9 @@ void get_model_size(const Model* model, float* width, float* depth, float* heigh
     max->x = max_x;
     max->y = max_y;
     max->z = max_z;
+}
+
+
+double generate_random_number(double min, double max) {
+    return ((double)rand() / RAND_MAX) * (max - min) + min;
 }

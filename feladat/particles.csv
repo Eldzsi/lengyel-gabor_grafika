@@ -1,0 +1,3 @@
+x,y,z,spread_x,spread_y,spread_z,particle_count
+0.0,0.0,0.0,20.0,20.0,20.0,3000
+0.0,10.0,0.0,5.0,5.0,5.0,3000
