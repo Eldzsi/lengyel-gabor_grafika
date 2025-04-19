@@ -9,7 +9,7 @@
 void init_app(App* app) {
     int error_code = SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
     if (error_code != 0) {
-        printf("[ERROR] SDL initialization error: %s\n", SDL_GetError());
+        printf("\n[ERROR] SDL initialization error: %s", SDL_GetError());
         return;
     }
 
@@ -31,19 +31,19 @@ void init_app(App* app) {
         app->width, app->height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (app->window == NULL) {
-        printf("[ERROR] Unable to create the application window!\n");
+        printf("\n[ERROR] Unable to create the application window!");
         return;
     }
 
     inited_loaders = IMG_Init(IMG_INIT_PNG);
     if (inited_loaders == 0) {
-        printf("[ERROR] IMG initialization error: %s\n", IMG_GetError());
+        printf("\n[ERROR] IMG initialization error: %s", IMG_GetError());
         return;
     }
 
     app->gl_context = SDL_GL_CreateContext(app->window);
     if (app->gl_context == NULL) {
-        printf("[ERROR] Unable to create the OpenGL context!\n");
+        printf("\n[ERROR] Unable to create the OpenGL context!");
         return;
     }
 

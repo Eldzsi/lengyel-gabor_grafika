@@ -46,7 +46,7 @@ void init_scene(Scene* scene, App* app) {
 void load_smoke_data_from_csv(Scene* scene, const char* filename) {
     FILE* file = fopen(filename, "r");
     if (!file) {
-        printf("\n[Error] Unable to open %s", filename);
+        printf("\n[ERROR] Unable to open %s", filename);
         return;
     }
 
@@ -74,7 +74,7 @@ void load_smoke_data_from_csv(Scene* scene, const char* filename) {
 void load_object_data_from_csv(Scene* scene, const char* filename) {
     FILE* file = fopen(filename, "r");
     if (!file) {
-        printf("[Error] Unable to open objects.csv");
+        printf("\n[ERROR] Unable to open objects.csv");
         return;
     }
 
