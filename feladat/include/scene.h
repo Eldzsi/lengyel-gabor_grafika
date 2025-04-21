@@ -40,6 +40,7 @@ typedef struct Scene {
     BoundingBox crouch_bounding_boxes[MAX_OBJECTS];
     int object_count;
     int smoke_count;
+    float fog_density;
 } Scene;
 
 
@@ -58,6 +59,8 @@ void update_scene(Scene* scene, Player* player, double elapsed_time);
 void draw_object(const Object* obj);
 
 void render_scene(const Scene* scene, const Player* player);
+
+void init_fog();
 
 
 #endif

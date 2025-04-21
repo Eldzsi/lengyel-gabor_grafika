@@ -40,6 +40,9 @@ void init_scene(Scene* scene, App* app) {
         BoundingBox c_box = calculate_bounding_box(&scene->objects[i], 0.2);
         scene->crouch_bounding_boxes[i] = c_box;
     }
+
+    scene->fog_density = 0.0f;  // induláskor nincs köd
+    init_fog();
 }
 
 
@@ -186,6 +189,14 @@ void update_scene(Scene* scene, Player* player, double elapsed_time) {
     for (int i = 0; i < scene->smoke_count; i++) {
         update_smoke(&scene->smokes[i], elapsed_time);
     }
+
+    if (scene->fog_density < 1.0f) {
+        scene->fog_density += 0.005f * elapsed_time;
+        if (scene->fog_density > 0.5f) {
+            scene->fog_density = 0.5f;
+        }
+        glFogf(GL_FOG_DENSITY, scene->fog_density);
+    }
 }
 
 
@@ -213,4 +224,16 @@ void render_scene(const Scene* scene, const Player* player) {
     for (int i = 0; i < scene->object_count; i++) {
         draw_object(&scene->objects[i]);
     }
+}
+
+
+void init_fog() {
+    glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE, GL_EXP);
+
+    GLfloat fog_color[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    glFogfv(GL_FOG_COLOR, fog_color);
+
+    glFogf(GL_FOG_START, 0.5f);
+    glFogf(GL_FOG_END, 50.0f);
 }
