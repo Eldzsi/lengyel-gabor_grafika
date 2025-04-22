@@ -27,6 +27,8 @@ typedef struct Object {
     vec3 position;
     vec3 rotation;
     vec3 scale;
+    float radius;
+    float speed;
     char model_path[128];
     char texture_path[128];
     char name[32];
@@ -55,6 +57,10 @@ void set_lighting(const Player* player, float brightness);
 void set_material(const Material* material);
 
 void update_scene(Scene* scene, Player* player, double elapsed_time);
+
+void update_moving_objects(Scene* scene, double elapsed_time);
+
+void update_fog(Scene* scene, double elapsed_time);
 
 void draw_object(const Object* obj);
 

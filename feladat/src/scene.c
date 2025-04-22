@@ -41,7 +41,7 @@ void init_scene(Scene* scene, App* app) {
         scene->crouch_bounding_boxes[i] = c_box;
     }
 
-    scene->fog_density = 0.0f;  // induláskor nincs köd
+    scene->fog_density = 0.0f;
     init_fog();
 }
 
@@ -88,11 +88,13 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
 
     while (fgets(line, sizeof(line), file)) {
         Object obj;
-        sscanf(line, "%[^,],%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f",
+        sscanf(line, "%[^,],%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",
             obj.model_path, obj.texture_path, obj.name,
             &obj.position.x, &obj.position.y, &obj.position.z,
             &obj.rotation.x, &obj.rotation.y, &obj.rotation.z,
-            &obj.scale.x, &obj.scale.y, &obj.scale.z);
+            &obj.scale.x, &obj.scale.y, &obj.scale.z,
+            &obj.radius, &obj.speed
+        );
 
         load_model(&obj.model, obj.model_path);
         
@@ -112,7 +114,7 @@ void set_lighting(const Player* player, float brightness) {
     float diffuse_light0[] = {1.0f * brightness, 1.0f * brightness, 1.0f * brightness, 1.0f};
     float specular_light0[] = {0.0f * brightness, 0.0f * brightness, 0.0f * brightness, 1.0f};
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; i++) {
         ambient_light0[i] *= brightness;
         diffuse_light0[i] *= brightness;
         specular_light0[i] *= brightness;
@@ -190,6 +192,35 @@ void update_scene(Scene* scene, Player* player, double elapsed_time) {
         update_smoke(&scene->smokes[i], elapsed_time);
     }
 
+    update_moving_objects(scene, elapsed_time);
+
+    update_fog(scene, elapsed_time);
+}
+
+
+void update_moving_objects(Scene* scene, double elapsed_time) {
+    float radius;
+    float speed;
+    static float angles[MAX_OBJECTS] = {0.0f};
+
+    for (int i = 0; i < scene->object_count; i++) {
+        if (strcmp(scene->objects[i].name, "rock_moving") == 0) {
+            radius = scene->objects[i].radius;
+            speed = scene->objects[i].speed;
+
+            angles[i] += speed * elapsed_time;
+            if (angles[i] > 2 * M_PI) {
+                angles[i] -= 2 * M_PI;
+            }
+
+            scene->objects[i].position.x = cos(angles[i]) * radius;
+            scene->objects[i].position.y = sin(angles[i]) * radius;
+        }
+    }
+}
+
+
+void update_fog(Scene* scene, double elapsed_time) {
     if (scene->fog_density < 1.0f) {
         scene->fog_density += 0.005f * elapsed_time;
         if (scene->fog_density > 0.5f) {
@@ -217,7 +248,7 @@ void render_scene(const Scene* scene, const Player* player) {
     set_material(&(scene->material));
     set_lighting(player, player->flashlight_brightness);
 
-    for (int i = 0; i < scene->smoke_count; ++i) {
+    for (int i = 0; i < scene->smoke_count; i++) {
         render_smoke(&(scene->smokes[i]));
     }
 
