@@ -44,17 +44,17 @@ void init_opengl();
 
 void reshape(int width, int height);
 
-void update_app(App* app);
-
 void render_app(App* app);
-
-void destroy_app(App* app);
 
 void add_image(App* app, char* filename, float x, float y, float width, float height);
 
 void render_images(App* app);
 
 void render_oxygen(App* app, Player* player);
+
+void update_app(App* app);
+
+void destroy_app(App* app);
 
 
 #endif

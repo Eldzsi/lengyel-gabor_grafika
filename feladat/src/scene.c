@@ -12,7 +12,7 @@
 #include <math.h>
 
 
-void init_scene(Scene* scene, App* app) {
+void init_scene(Scene* scene) {
     load_object_data_from_csv(scene, "objects.csv");
 
     load_smoke_data_from_csv(scene, "particles.csv");
@@ -41,69 +41,6 @@ void init_scene(Scene* scene, App* app) {
 
     scene->fog_density = 0.0f;
     init_fog();
-}
-
-
-void load_smoke_data_from_csv(Scene* scene, const char* filename) {
-    FILE* file = fopen(filename, "r");
-    if (!file) {
-        printf("\n[ERROR] Unable to open %s", filename);
-        return;
-    }
-
-    char line[256];
-    fgets(line, sizeof(line), file);
-
-    scene->smoke_count = 0;
-
-    while (fgets(line, sizeof(line), file) && scene->smoke_count < MAX_SMOKES) {
-        float x, y, z;
-        int particle_count;
-        float spread_x, spread_y, spread_z;
-
-        if (sscanf(line, "%f,%f,%f,%f,%f,%f,%d", &x, &y, &z, &spread_x, &spread_y, &spread_z, &particle_count) == 7) {
-            vec3 position = {x, y, z};
-            init_smoke(&scene->smokes[scene->smoke_count], position, particle_count, spread_x, spread_y, spread_z);
-            scene->smoke_count++;
-        } 
-    }
-
-    fclose(file);
-}
-
-
-void load_object_data_from_csv(Scene* scene, const char* filename) {
-    FILE* file = fopen(filename, "r");
-    if (!file) {
-        printf("\n[ERROR] Unable to open objects.csv");
-        return;
-    }
-
-    char line[256];
-    fgets(line, sizeof(line), file);
-
-    scene->object_count = 0;
-
-    while (fgets(line, sizeof(line), file)) {
-        Object obj;
-        sscanf(line, "%[^,],%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",
-            obj.model_path, obj.texture_path, obj.name,
-            &obj.position.x, &obj.position.y, &obj.position.z,
-            &obj.rotation.x, &obj.rotation.y, &obj.rotation.z,
-            &obj.scale.x, &obj.scale.y, &obj.scale.z,
-            &obj.radius, &obj.speed
-        );
-
-        load_model(&obj.model, obj.model_path);
-        
-        obj.texture_id = load_texture(obj.texture_path);
-  
-        get_model_size(&obj.model, &obj.size.x, &obj.size.y, &obj.size.z, &obj.min, &obj.max);
-
-        scene->objects[scene->object_count++] = obj;
-    }
-
-    fclose(file);
 }
 
 
@@ -183,6 +120,45 @@ void set_material(const Material* material) {
 }
 
 
+void init_fog() {
+    glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE, GL_EXP);
+
+    GLfloat fog_color[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    glFogfv(GL_FOG_COLOR, fog_color);
+
+    glFogf(GL_FOG_START, 0.5f);
+    glFogf(GL_FOG_END, 50.0f);
+}
+
+
+void render_scene(const Scene* scene, const Player* player) {
+    set_material(&(scene->material));
+    set_lighting(player, player->flashlight_brightness);
+
+    for (int i = 0; i < scene->smoke_count; i++) {
+        render_smoke(&(scene->smokes[i]));
+    }
+
+    for (int i = 0; i < scene->object_count; i++) {
+        draw_object(&scene->objects[i]);
+    }
+}
+
+
+void draw_object(const Object* obj) {
+    glPushMatrix();
+    glTranslatef(obj->position.x, obj->position.y, obj->position.z);
+    glRotatef(obj->rotation.x, 1, 0, 0);
+    glRotatef(obj->rotation.y, 0, 1, 0);
+    glRotatef(obj->rotation.z, 0, 0, 1);
+    glScalef(obj->scale.x, obj->scale.y, obj->scale.z);
+    glBindTexture(GL_TEXTURE_2D, obj->texture_id);
+    draw_model(&obj->model);
+    glPopMatrix();
+}
+
+
 void update_scene(Scene* scene, Player* player, double elapsed_time) {
     scene->smokes[0].position = player->position;
 
@@ -231,40 +207,64 @@ void update_fog(Scene* scene, double elapsed_time) {
 }
 
 
-void draw_object(const Object* obj) {
-    glPushMatrix();
-    glTranslatef(obj->position.x, obj->position.y, obj->position.z);
-    glRotatef(obj->rotation.x, 1, 0, 0);
-    glRotatef(obj->rotation.y, 0, 1, 0);
-    glRotatef(obj->rotation.z, 0, 0, 1);
-    glScalef(obj->scale.x, obj->scale.y, obj->scale.z);
-    glBindTexture(GL_TEXTURE_2D, obj->texture_id);
-    draw_model(&obj->model);
-    glPopMatrix();
+void load_object_data_from_csv(Scene* scene, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("\n[ERROR] Unable to open objects.csv");
+        return;
+    }
+
+    char line[256];
+    fgets(line, sizeof(line), file);
+
+    scene->object_count = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        Object obj;
+        sscanf(line, "%[^,],%[^,],%[^,],%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",
+            obj.model_path, obj.texture_path, obj.name,
+            &obj.position.x, &obj.position.y, &obj.position.z,
+            &obj.rotation.x, &obj.rotation.y, &obj.rotation.z,
+            &obj.scale.x, &obj.scale.y, &obj.scale.z,
+            &obj.radius, &obj.speed
+        );
+
+        load_model(&obj.model, obj.model_path);
+        
+        obj.texture_id = load_texture(obj.texture_path);
+  
+        get_model_size(&obj.model, &obj.size.x, &obj.size.y, &obj.size.z, &obj.min, &obj.max);
+
+        scene->objects[scene->object_count++] = obj;
+    }
+
+    fclose(file);
 }
 
 
-void render_scene(const Scene* scene, const Player* player) {
-    set_material(&(scene->material));
-    set_lighting(player, player->flashlight_brightness);
-
-    for (int i = 0; i < scene->smoke_count; i++) {
-        render_smoke(&(scene->smokes[i]));
+void load_smoke_data_from_csv(Scene* scene, const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("\n[ERROR] Unable to open %s", filename);
+        return;
     }
 
-    for (int i = 0; i < scene->object_count; i++) {
-        draw_object(&scene->objects[i]);
+    char line[256];
+    fgets(line, sizeof(line), file);
+
+    scene->smoke_count = 0;
+
+    while (fgets(line, sizeof(line), file) && scene->smoke_count < MAX_SMOKES) {
+        float x, y, z;
+        int particle_count;
+        float spread_x, spread_y, spread_z;
+
+        if (sscanf(line, "%f,%f,%f,%f,%f,%f,%d", &x, &y, &z, &spread_x, &spread_y, &spread_z, &particle_count) == 7) {
+            vec3 position = {x, y, z};
+            init_smoke(&scene->smokes[scene->smoke_count], position, particle_count, spread_x, spread_y, spread_z);
+            scene->smoke_count++;
+        } 
     }
-}
 
-
-void init_fog() {
-    glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_EXP);
-
-    GLfloat fog_color[] = {0.5f, 0.5f, 0.5f, 1.0f};
-    glFogfv(GL_FOG_COLOR, fog_color);
-
-    glFogf(GL_FOG_START, 0.5f);
-    glFogf(GL_FOG_END, 50.0f);
+    fclose(file);
 }

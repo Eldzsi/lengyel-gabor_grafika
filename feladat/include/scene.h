@@ -46,15 +46,17 @@ typedef struct Scene {
 } Scene;
 
 
-void load_object_data_from_csv(Scene* scene, const char* filename);
-
-void load_smoke_data_from_csv(Scene* scene, const char* filename);
-
-void init_scene(Scene* scene, App* app);
+void init_scene(Scene* scene);
 
 void set_lighting(const Player* player, float brightness);
 
 void set_material(const Material* material);
+
+void init_fog();
+
+void render_scene(const Scene* scene, const Player* player);
+
+void draw_object(const Object* obj);
 
 void update_scene(Scene* scene, Player* player, double elapsed_time);
 
@@ -62,11 +64,9 @@ void update_moving_objects(Scene* scene, double elapsed_time);
 
 void update_fog(Scene* scene, double elapsed_time);
 
-void draw_object(const Object* obj);
+void load_object_data_from_csv(Scene* scene, const char* filename);
 
-void render_scene(const Scene* scene, const Player* player);
-
-void init_fog();
+void load_smoke_data_from_csv(Scene* scene, const char* filename);
 
 
 #endif

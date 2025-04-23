@@ -52,7 +52,7 @@ void init_app(App* app) {
     reshape(app->width, app->height);
 
     init_camera(&(app->player));
-    init_scene(&(app->scene), app);
+    init_scene(&(app->scene));
 
     // init_mixer();
     // play_sound("assets/sounds/lava.mp3", -1);
@@ -85,6 +85,42 @@ void init_app(App* app) {
 }
 
 
+void init_opengl() {
+    glShadeModel(GL_SMOOTH);
+
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_AUTO_NORMAL);
+
+    glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+
+    glClearDepth(1.0);
+
+    glEnable(GL_TEXTURE_2D);
+
+    glEnable(GL_LIGHTING);
+}
+
+
+void reshape(int width, int height) {
+    double ratio = (double)width / (double)height;
+
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    glFrustum(
+        -0.08 * ratio, 0.08 * ratio,
+        -0.08, 0.08,
+        0.08, 100.0
+    );
+}
+
+
 void add_image(App* app, char* filename, float x, float y, float width, float height) {
     for (int i = 0; i < 100; i++) {
         if (app->images[i].texture == 0) {
@@ -97,6 +133,27 @@ void add_image(App* app, char* filename, float x, float y, float width, float he
             break;
         }
     }
+}
+
+
+void render_app(App* app) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    reshape(app->width, app->height);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glPushMatrix();
+    set_view(&(app->player));
+    render_scene(&(app->scene), &(app->player));
+    glPopMatrix();   
+
+    render_images(app);
+
+    render_oxygen(app, &(app->player));
+
+    SDL_GL_SwapWindow(app->window);
 }
 
 
@@ -150,97 +207,6 @@ void render_images(App* app) {
 }
 
 
-void init_opengl() {
-    glShadeModel(GL_SMOOTH);
-
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_AUTO_NORMAL);
-
-    glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glEnable(GL_DEPTH_TEST);
-
-    glClearDepth(1.0);
-
-    glEnable(GL_TEXTURE_2D);
-
-    glEnable(GL_LIGHTING);
-}
-
-
-void reshape(int width, int height) {
-    double ratio = (double)width / (double)height;
-
-    glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    
-    glFrustum(
-        -0.08 * ratio, 0.08 * ratio,
-        -0.08, 0.08,
-        0.08, 100.0
-    );
-}
-
-
-void update_app(App* app) {
-    double current_time;
-    double elapsed_time;
-
-    current_time = (double)SDL_GetTicks() / 1000;
-    elapsed_time = current_time - app->uptime;
-    app->uptime = current_time;
-
-    update_camera(&(app->player), elapsed_time, &(app->scene));
-    update_scene(&(app->scene), &(app->player), elapsed_time);
-}
-
-
-void render_app(App* app) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    reshape(app->width, app->height);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glPushMatrix();
-    set_view(&(app->player));
-    render_scene(&(app->scene), &(app->player));
-    glPopMatrix();   
-
-    render_images(app);
-
-    render_oxygen(app, &(app->player));
-
-    SDL_GL_SwapWindow(app->window);
-}
-
-
-void destroy_app(App* app) {
-    if (app->gl_context != NULL) {
-        SDL_GL_DeleteContext(app->gl_context);
-    }
-
-    if (app->window != NULL) {
-        SDL_DestroyWindow(app->window);
-    }
-
-    for (int i = 0; i < 100; i++) {
-        if (app->images[i].texture != 0) { 
-            glDeleteTextures(1, &(app->images[i].texture));
-            app->images[i].texture = 0;
-        }
-    }
-
-    // destroy_mixer();
-    SDL_Quit();
-}
-
-
 void render_oxygen(App* app, Player* player) {
     glPushMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -278,4 +244,38 @@ void render_oxygen(App* app, Player* player) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glPopMatrix();
+}
+
+
+void update_app(App* app) {
+    double current_time;
+    double elapsed_time;
+
+    current_time = (double)SDL_GetTicks() / 1000;
+    elapsed_time = current_time - app->uptime;
+    app->uptime = current_time;
+
+    update_camera(&(app->player), elapsed_time, &(app->scene));
+    update_scene(&(app->scene), &(app->player), elapsed_time);
+}
+
+
+void destroy_app(App* app) {
+    if (app->gl_context != NULL) {
+        SDL_GL_DeleteContext(app->gl_context);
+    }
+
+    if (app->window != NULL) {
+        SDL_DestroyWindow(app->window);
+    }
+
+    for (int i = 0; i < 100; i++) {
+        if (app->images[i].texture != 0) { 
+            glDeleteTextures(1, &(app->images[i].texture));
+            app->images[i].texture = 0;
+        }
+    }
+
+    // destroy_mixer();
+    SDL_Quit();
 }
