@@ -1,4 +1,5 @@
 #include "app.h"
+#include "player.h"
 
 #include <SDL2/SDL_image.h>
 
@@ -57,10 +58,6 @@ void init_app(App* app) {
     // play_sound("assets/sounds/lava.mp3", -1);
 
     app->is_running = true;
-
-    app->player.flashlight_on = false;
-
-    app->player.health = 3;
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -217,6 +214,8 @@ void render_app(App* app) {
 
     render_images(app);
 
+    render_oxygen(app, &(app->player));
+
     SDL_GL_SwapWindow(app->window);
 }
 
@@ -239,4 +238,44 @@ void destroy_app(App* app) {
 
     // destroy_mixer();
     SDL_Quit();
+}
+
+
+void render_oxygen(App* app, Player* player) {
+    glPushMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, app->width, app->height, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+
+    float x = 10.0f;
+    float y = 80.0f;
+    float width = 213.0f;
+    float height = 30.0f;
+
+    glColor3f(0.2f, 0.2f, 0.2f);
+    glBegin(GL_QUADS);
+        glVertex2f(x, y);
+        glVertex2f(x + width, y);
+        glVertex2f(x + width, y + height);
+        glVertex2f(x, y + height);
+    glEnd();
+
+    glColor3f(0.0f, 0.6f, 1.0f);
+    float fillWidth = width * player->oxygen;
+    glBegin(GL_QUADS);
+        glVertex2f(x, y);
+        glVertex2f(x + fillWidth, y);
+        glVertex2f(x + fillWidth, y + height);
+        glVertex2f(x, y + height);
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
 }

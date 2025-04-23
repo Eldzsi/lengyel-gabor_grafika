@@ -15,6 +15,7 @@ typedef struct Player {
     vec3 rotation;
     vec3 speed;
     int health;
+    float oxygen;
     float flashlight_brightness;
     bool flashlight_on;
     bool is_crouching;
@@ -51,5 +52,8 @@ void set_sprint_enabled(Player* player, bool enabled);
 bool is_crouch_enabled(Player* player);
 
 void set_crouch_enabled(Player* player, bool enabled);
+
+void update_oxygen(Player* player, float elapsed_time);
+
 
 #endif

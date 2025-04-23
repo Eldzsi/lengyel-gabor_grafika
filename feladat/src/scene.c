@@ -31,8 +31,6 @@ void init_scene(Scene* scene, App* app) {
 
     scene->material.shininess = 0.0;
 
-    app->player.flashlight_brightness = 0.5;
-
     for (int i = 0; i < scene->object_count; i++) {
         BoundingBox box = calculate_bounding_box(&scene->objects[i], 1.0);
         scene->bounding_boxes[i] = box;
@@ -195,6 +193,8 @@ void update_scene(Scene* scene, Player* player, double elapsed_time) {
     update_moving_objects(scene, elapsed_time);
 
     update_fog(scene, elapsed_time);
+
+    update_oxygen(player, elapsed_time);
 }
 
 

@@ -54,5 +54,7 @@ void add_image(App* app, char* filename, float x, float y, float width, float he
 
 void render_images(App* app);
 
+void render_oxygen(App* app, Player* player);
+
 
 #endif

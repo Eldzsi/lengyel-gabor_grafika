@@ -23,6 +23,12 @@ void init_camera(Player* player) {
 
     player->is_crouching = false;
     player->is_sprinting = false;
+
+    player->health = 3;
+    player->oxygen = 1.0f;
+
+    player->flashlight_on = false;
+    player->flashlight_brightness = 0.5;
 }
 
 
@@ -206,5 +212,16 @@ void set_crouch_enabled(Player* player, bool enabled) {
         player->position.z -= 0.8;
     } else {
         player->position.z += 0.8;
+    }
+}
+
+
+void update_oxygen(Player* player, float elapsed_time) {
+    if (player->oxygen > 0.0f) {
+        player->oxygen -= 0.01f * elapsed_time;
+    }
+
+    if (player->oxygen < 0.0f) {
+        player->oxygen = 0.0f;
     }
 }
