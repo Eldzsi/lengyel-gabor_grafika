@@ -17,6 +17,8 @@ typedef struct BoundingBox {
 
 BoundingBox calculate_bounding_box(const Object* obj, float z_offset);
 
+void update_bounding_boxes(Scene* scene);
+
 void draw_bounding_boxes(const Scene* scene);
 
 

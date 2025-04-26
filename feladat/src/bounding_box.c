@@ -102,6 +102,14 @@ BoundingBox calculate_bounding_box(const Object* obj, float z_offset) {
 }
 
 
+void update_bounding_boxes(Scene* scene) {
+    for (int i = 0; i < scene->object_count; i++) {
+        scene->bounding_boxes[i] = calculate_bounding_box(&scene->objects[i], 1.0f);
+        scene->crouch_bounding_boxes[i] = calculate_bounding_box(&scene->objects[i], 0.2f);
+    }
+}
+
+
 void draw_bounding_boxes(const Scene* scene) {
     glDisable(GL_LIGHTING);
     glColor3f(1.0f, 1.0f, 0.0f);

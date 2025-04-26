@@ -25,6 +25,7 @@ typedef struct Object {
     vec3 min;
     vec3 max;
     vec3 position;
+    vec3 original_position;
     vec3 rotation;
     vec3 scale;
     float radius;

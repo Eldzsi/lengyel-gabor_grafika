@@ -143,6 +143,8 @@ void render_scene(const Scene* scene, const Player* player) {
     for (int i = 0; i < scene->object_count; i++) {
         draw_object(&scene->objects[i]);
     }
+
+    //draw_bounding_boxes(scene);
 }
 
 
@@ -168,9 +170,12 @@ void update_scene(Scene* scene, Player* player, double elapsed_time) {
 
     update_moving_objects(scene, elapsed_time);
 
+    update_bounding_boxes(scene);
+
     update_fog(scene, elapsed_time);
 
     update_oxygen(player, elapsed_time);
+
 }
 
 
@@ -189,8 +194,8 @@ void update_moving_objects(Scene* scene, double elapsed_time) {
                 angles[i] -= 2 * M_PI;
             }
 
-            scene->objects[i].position.x = cos(angles[i]) * radius;
-            scene->objects[i].position.y = sin(angles[i]) * radius;
+            scene->objects[i].position.x = scene->objects[i].original_position.x + cos(angles[i]) * radius;
+            scene->objects[i].position.y = scene->objects[i].original_position.y + sin(angles[i]) * radius;
         }
     }
 }
@@ -228,6 +233,8 @@ void load_object_data_from_csv(Scene* scene, const char* filename) {
             &obj.scale.x, &obj.scale.y, &obj.scale.z,
             &obj.radius, &obj.speed
         );
+        
+        obj.original_position = obj.position;
 
         load_model(&obj.model, obj.model_path);
         
