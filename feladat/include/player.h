@@ -57,5 +57,9 @@ void set_crouch_enabled(Player* player, bool enabled);
 
 void update_oxygen(Player* player, float elapsed_time);
 
+int get_player_health(const Player* player);
+
+void set_player_health(Player* player, int value);
+
 
 #endif

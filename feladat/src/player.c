@@ -10,7 +10,7 @@
 
 void init_player(Player* player) {
     spawn_player(player);
-    player->health = 3;
+    set_player_health(player, 3);
 }
 
 
@@ -39,7 +39,7 @@ void spawn_player(Player* player) {
 
 
 void kill_player(Player* player) {
-    player->health -= 1;
+    set_player_health(player, get_player_health(player) - 1);
     spawn_player(player);
 }
 
@@ -226,5 +226,19 @@ void update_oxygen(Player* player, float elapsed_time) {
 
     if (player->oxygen < 0.0f) {
         player->oxygen = 0.0f;
+    }
+}
+
+
+int get_player_health(const Player* player) {
+    return player->health;
+}
+
+
+void set_player_health(Player* player, int value) {
+    if (value < 0) {
+        player->health = 0;
+    } else {
+        player->health = value;
     }
 }

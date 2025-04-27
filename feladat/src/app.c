@@ -173,7 +173,7 @@ void render_images(App* app) {
     for (int i = 0; i < 100; i++) {
         if (app->images[i].texture != 0) {
             if (strcmp(app->images[i].filename, "assets/images/heart.png") == 0) {
-                GLuint texture_to_render = (heart_count < app->player.health) ? app->images[i].texture : dead_heart_texture;
+                GLuint texture_to_render = (heart_count < get_player_health(&(app->player))) ? app->images[i].texture : dead_heart_texture;
 
                 render_image(
                     texture_to_render,
