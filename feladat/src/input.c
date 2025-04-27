@@ -69,7 +69,7 @@ void handle_app_events(App* app) {
                         mouse_x <= x + width && 
                         mouse_y >= y && 
                         mouse_y <= y + height) {                
-                        init_camera(&(app->player));
+                        init_player(&(app->player));
                     }
                 }
             }

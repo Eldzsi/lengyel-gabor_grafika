@@ -51,7 +51,7 @@ void init_app(App* app) {
     init_opengl();
     reshape(app->width, app->height);
 
-    init_camera(&(app->player));
+    init_player(&(app->player));
     init_scene(&(app->scene));
 
     // init_mixer();

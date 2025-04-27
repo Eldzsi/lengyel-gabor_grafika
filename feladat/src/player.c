@@ -8,7 +8,13 @@
 #include <string.h>
 
 
-void init_camera(Player* player) {
+void init_player(Player* player) {
+    spawn_player(player);
+    player->health = 3;
+}
+
+
+void spawn_player(Player* player) {
     player->position.x = -5.0;
     player->position.y = 0.0;
     player->position.z = 50.0;
@@ -24,20 +30,17 @@ void init_camera(Player* player) {
     player->is_crouching = false;
     player->is_sprinting = false;
 
-    player->health = 3;
     player->oxygen = 1.0f;
+    
 
     player->flashlight_on = false;
     player->flashlight_brightness = 0.5;
 }
 
 
-void respawn(Player* player) {
-    init_camera(player);
-
-    if (player->health > 0) {
-        player->health -= 1;
-    }
+void kill_player(Player* player) {
+    player->health -= 1;
+    spawn_player(player);
 }
 
 
@@ -133,7 +136,7 @@ void try_move(Player* player, Scene* scene, double x, double y, double z) {
     }
     
     if (strcmp(collided, "lava") == 0) {
-        respawn(player);
+        kill_player(player);
         return;
     }
     

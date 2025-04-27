@@ -23,9 +23,11 @@ typedef struct Player {
 } Player;
 
 
-void init_camera(Player* player);
+void init_player(Player* player);
 
-void respawn(Player* player);
+void spawn_player(Player* player);
+
+void kill_player(Player* player);
 
 void set_view(const Player* player);
 
