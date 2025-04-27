@@ -37,23 +37,49 @@ typedef struct App {
     bool menu_open;
 } App;
 
-
+/*
+Initialize the application, including OpenGL, SDL, player, and scene.
+*/
 void init_app(App* app);
 
+/*
+Set up basic OpenGL settings
+*/
 void init_opengl();
 
+/*
+Adjust the OpenGL viewport and projection matrix based on window size.
+*/
 void reshape(int width, int height);
 
+/*
+Render the application, including the scene and UI elements.
+*/
 void render_app(App* app);
 
+/*
+Add an image to the application with specified position and size.
+*/
 void add_image(App* app, char* filename, float x, float y, float width, float height);
 
+/*
+Render all UI images based on their current states.
+*/
 void render_images(App* app);
 
+/*
+Render the oxygen bar based on the player's oxygen level.
+*/
 void render_oxygen(App* app, Player* player);
 
+/*
+Update the application logic, player, and scene.
+*/
 void update_app(App* app);
 
+/*
+Destroy the application and free resources.
+*/
 void destroy_app(App* app);
 
 

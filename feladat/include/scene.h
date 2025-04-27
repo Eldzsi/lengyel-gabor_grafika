@@ -47,26 +47,59 @@ typedef struct Scene {
 } Scene;
 
 
+/*
+Initialize the scene, load objects and effects.
+*/
 void init_scene(Scene* scene);
 
+/*
+Set up static and dynamic lighting.
+*/
 void set_lighting(const Player* player, float brightness);
 
+/*
+Apply material settings to OpenGL.
+*/
 void set_material(const Material* material);
 
+/*
+Initialize fog settings for the scene.
+*/
 void init_fog();
 
+/*
+Render the full scene including objects and effects.
+*/
 void render_scene(const Scene* scene, const Player* player);
 
+/*
+Draw a single object in the scene.
+*/
 void draw_object(const Object* obj);
 
+/*
+Update the scene, including animations and effects.
+*/
 void update_scene(Scene* scene, Player* player, double elapsed_time);
 
+/*
+Update the position of moving objects based on elapsed time.
+*/
 void update_moving_objects(Scene* scene, double elapsed_time);
 
+/*
+Update the density and appearance of fog over time.
+*/
 void update_fog(Scene* scene, double elapsed_time);
 
+/*
+Load object data from a CSV file into the scene.
+*/
 void load_object_data_from_csv(Scene* scene, const char* filename);
 
+/*
+Load smoke particle data from a CSV file into the scene.
+*/
 void load_smoke_data_from_csv(Scene* scene, const char* filename);
 
 
