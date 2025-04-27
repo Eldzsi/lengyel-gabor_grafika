@@ -69,17 +69,19 @@ void init_app(App* app) {
         "assets/images/heart.png", "assets/images/heart.png", "assets/images/heart.png", 
         "assets/images/dead_heart.png", "assets/images/dead_heart.png", "assets/images/dead_heart.png", 
         "assets/images/flashlight_0.png", "assets/images/flashlight_1.png", 
-        "assets/images/key_f.png", "assets/images/menu.png", "assets/images/close.png"
+        "assets/images/key_f.png", "assets/images/menu.png", "assets/images/close.png",
+        "assets/images/o2.png"
     };
     const float image_positions[][4] = {
         {10, 10, 64, 64}, {84, 10, 64, 64}, {158, 10, 64, 64}, 
         {10, 10, 64, 64}, {84, 10, 64, 64}, {158, 10, 64, 64}, 
         {app->width - 90, app->height - 90, 80, 80}, {app->width - 90, app->height - 90, 80, 80}, 
         {app->width - 42, app->height - 37, 24, 24}, {app->width / 2 - 250, app->height / 2 - 350 / 2, 500, 350}, 
-        {app->width / 2 + 225, app->height / 2 - 350 / 2 + 5, 20, 20}
+        {app->width / 2 + 225, app->height / 2 - 350 / 2 + 5, 20, 20},
+        {106, 85, 20, 20}
     };
 
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 12; i++) {
         add_image(app, image_paths[i], image_positions[i][0], image_positions[i][1], image_positions[i][2], image_positions[i][3]);
     }
 }
@@ -149,9 +151,9 @@ void render_app(App* app) {
     render_scene(&(app->scene), &(app->player));
     glPopMatrix();   
 
-    render_images(app);
-
     render_oxygen(app, &(app->player));
+
+    render_images(app);
 
     SDL_GL_SwapWindow(app->window);
 }
@@ -208,8 +210,8 @@ void render_images(App* app) {
 
 
 void render_oxygen(App* app, Player* player) {
-    glPushMatrix();
     glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
     glLoadIdentity();
     glOrtho(0, app->width, app->height, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
@@ -241,9 +243,10 @@ void render_oxygen(App* app, Player* player) {
         glVertex2f(x, y + height);
     glEnd();
 
+    glPopMatrix();
+    glColor3f(1.0f, 1.6f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
-    glPopMatrix();
 }
 
 
