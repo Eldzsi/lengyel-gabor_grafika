@@ -106,6 +106,7 @@ void set_crouch_enabled(Player* player, bool enabled);
 
 /*
 Decrease the player's oxygen level over time.
+Zero oxygen level leads to the player's death.
 */
 void update_oxygen(Player* player, float elapsed_time);
 

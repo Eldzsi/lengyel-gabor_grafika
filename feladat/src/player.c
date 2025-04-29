@@ -224,8 +224,8 @@ void update_oxygen(Player* player, float elapsed_time) {
         player->oxygen -= 0.01f * elapsed_time;
     }
 
-    if (player->oxygen < 0.0f) {
-        player->oxygen = 0.0f;
+    if (player->oxygen <= 0.0f) {
+        kill_player(player);
     }
 }
 
