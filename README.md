@@ -14,7 +14,7 @@ A make parancs kiadásával egyszerűen fordíthatók a programok.
 
 ## Féléves feladat specifikáció
 
-A feladat célja egy háromdimenziós, platformer, ügyességi játék prototípusának implementálása. A játék alapvetően egy lávatóban játszódik, amiben kisebb-nagyobb szikladarabok lebegnek. Ezeken kell átugrálnia a játékosnak.
+A feladat célja egy háromdimenziós, platformer, ügyességi játék prototípusának implementálása. A játék alapvetően egy lávatóban játszódik, amiben kisebb-nagyobb szikladarabok lebegnek. Ezeken kell átugrálnia a játékosnak. A játékmenetet izgalmasabbá teszik mozgó sziklák is. Megadható, hogy egy adott objektum milyen koordinátán, milyen sugárral és sebességgel mozogjon körbe-körbe.
 
 A játék belsőnézetű, a játékos karaktere maga a kamera. A játékos tud előre és hátra, valamint oldalra mozogni a WASD billentyűkkel. A C billentyűvel guggolni, a bal Shift-tel futni, a Space-szel pedig ugrani lehet. Az ugrás implementálásához szükséges a gravitáció megvalósítása is.
 
@@ -26,11 +26,16 @@ A program tartalmaz egy HUD-ot, ami folyamatosan megjelenít információkat a k
 
 Az objektumok adatait egy .csv fájlból olvassa be a program. Ez alapján tölti be a megfelelő objektumokat, adott textúrával, koordinátákkal és rotációval, valamint mérettel. 
 
-Minden objektumhoz meghatározásra került két bounding box. Az egyikkel akkor ellenőrzi a kamera ütközését a program, ha guggol a játékos, a másikkal pedig akkor, ha nem. A bounding box az objektumok három tengelyen való minimum és maximum koordinátái segítségével meghatározott téglatestek. A kamera pontként van kezelve, ezért a bounding box mérete meg van növelve annyival, hogy megfelelően működjön a kamerával való ütközés detektálása.
+Minden objektumhoz meghatározásra került két bounding box. Az egyikkel akkor ellenőrzi a kamera ütközését a program, ha guggol a játékos, a másikkal pedig akkor, ha nem. A bounding box az objektumok három tengelyen való minimum és maximum koordinátái segítségével meghatározott téglatestek. A kamera pontként van kezelve, ezért a bounding box mérete meg van növelve annyival, hogy megfelelően működjön a kamerával való ütközés detektálása. A mozgó objektumokhoz tartozó bounding boxok az objektummal együtt mozognak.
+
+A színteret enyhe, majd dinamikusan sűrűsödő köd borítja be.
+
+Részecskerendszer implementálásával füst is megjelenítésre kerül. Az idő telésével a füsttől fokozatosan csökken a játékos oxigén szintje, ami a HUD-on jelenik meg.
+
+A játékos életet veszít, ha beleesik a lávába vagy elfogy az oxigénje. 
 
 Különböző hangeffektek (például a láva hangja, ugrás hangeffekt) lejátszására is képes a program az SDL_mixer könyvtár segítségével. (Ideiglenesen eltávolítva)
 
 ## A féléves feladathoz tartozó assetek
 
-https://www.dropbox.com/scl/fi/lfevhknkekb0czv2pe3u1/assets.zip?rlkey=s7roqg8mfuwqyh0tkmfztlmyi&e=2&st=jr01wgvj&dl=0
-
+https://www.dropbox.com/scl/fi/j4z3m0leol0j6xx5701fk/assets.zip?rlkey=n6d26llk5weq2w8oyoxi251t8&e=1&st=33e6s2f0&dl=0
