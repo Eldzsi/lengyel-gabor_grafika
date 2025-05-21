@@ -13,9 +13,9 @@
 
 
 void init_scene(Scene* scene) {
-    load_object_data_from_csv(scene, "objects.csv");
+    load_object_data_from_csv(scene, "assets/data/objects.csv");
 
-    load_smoke_data_from_csv(scene, "particles.csv");
+    load_smoke_data_from_csv(scene, "assets/data/particles.csv");
 
     scene->material.ambient.red = 0.1;
     scene->material.ambient.green = 0.1;
@@ -40,7 +40,7 @@ void init_scene(Scene* scene) {
     }
 
     scene->fog_density = 0.0f;
-    init_fog();
+    // init_fog();
 }
 
 
@@ -172,7 +172,7 @@ void update_scene(Scene* scene, Player* player, double elapsed_time) {
 
     update_bounding_boxes(scene);
 
-    update_fog(scene, elapsed_time);
+    // update_fog(scene, elapsed_time);
 
     update_oxygen(player, elapsed_time);
 
